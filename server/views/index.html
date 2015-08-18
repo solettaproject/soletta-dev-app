@@ -1,0 +1,248 @@
+<html ng-app="soletta-devapp" ng-init="loadingStatus='true'">
+    <head>
+        <meta charset="utf-8">
+        <title>Soletta Development Application</title>
+
+        <!--<link rel="stylesheet" type="text/css" href="/libs/bootstrap/dist/css/bootstrap.min.css">!-->
+        <link rel="stylesheet" type="text/css" href="/libs/bootstrap/dist/css/bootstrap.css">
+        <!--<link rel="stylesheet" type="text/css" href="/jstree/themes/default/style.min.css">!-->
+        <link rel="stylesheet" type="text/css" href="/jstree/themes/default/style.css">
+        <link rel="stylesheet" type="text/css" href="/css/app.css">
+        <link rel="stylesheet" type="text/css" href="/libs/highlightjs/styles/railscasts.css">
+        <link rel="stylesheet" type="text/css" href="/libs/angular-datatables/dist/plugins/bootstrap/datatables.bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/css/all.css">
+        <link rel="stylesheet" type="text/css" href="/css/jquery-ui.css">
+        <link rel="stylesheet" type="text/css" href="/css/dialog.css">
+        <link rel="stylesheet" type="text/css" href="/css/theme.css">
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
+        <script src="/libs/angular/angular.min.js"></script>
+        <script src="/libs/angular-route/angular-route.min.js"></script>
+        <script src="/libs/jquery/dist/jquery.min.js"></script>
+        <script src="/jstree/jstree.min.js"></script>
+        <script src="/libs/jquery-ui/jquery-ui.min.js"></script>
+        <script src="/libs/jstree-directive/jsTree.directive.js"></script>
+        <script src="/js/app.js"></script>
+        <script src="/js/factory.js"></script>
+        <script src="/js/controllers.js"></script>
+        <script src="/js/controllers/editor.js"></script>
+        <script src="/js/controllers/journal.js"></script>
+        <script src="/js/controllers/menu.js"></script>
+        <script src="/js/controllers/cheat_sheet.js"></script>
+        <script src="/libs/highlightjs/highlight.pack.js"></script>
+        <script src="/libs/angular-highlightjs/angular-highlightjs.min.js"></script>
+        <script src="/libs/datatables/media/js/jquery.dataTables.min.js"></script>
+        <script src="/libs/angular-datatables/dist/angular-datatables.min.js"></script>
+        <script src="/libs/angular-ui-ace/ui-ace.min.js"></script>
+        <script src="/libs/ace-builds/src-min/ace.js"></script>
+        <script src="/libs/ace-builds/src-min/ext-modelist.js"></script>
+        <script src="/libs/underscore/underscore-min.js"></script>
+        <script src="/libs/spin.js/spin.js"></script>
+        <script src="/libs/angular-spinner/angular-spinner.min.js"></script>
+        <script src="/libs/ng-context-menu/dist/ng-context-menu.min.js"></script>
+        <script src="/js/collapse/ui-bootstrap-custom-0.13.1.min.js"></script>
+        <script src="/js/combobox/jquery-ui-custom-combobox.js"></script>
+        <script>
+            $(function() {
+                var currentContent = $('#cb');
+                var currentMenu = $('#menu-cb');
+                var bottomMargin = 220;
+
+                //initial setup
+                $('#sj').hide();
+                $('#fe').hide();
+                $('#sc').hide();
+                currentMenu.addClass('menu-item-selected');
+
+                //Handling the menu clicks
+                $('.menu-item').on('click',function(event){
+
+                    //clearing old references
+                    currentContent.hide();
+                    currentMenu.removeClass('menu-item-selected');
+
+                    //assigning new menu and content
+                    currentMenu = $(event.target);
+                    currentContent = $('#' + (currentMenu).attr('id').substr(5));
+
+                    currentMenu.addClass('menu-item-selected');
+                    currentContent.show();
+
+                });
+
+                //handling mouse over and mouse out events
+                $('.menu-item').mouseover(function(event){
+                    $(event.target).addClass('menu-item-hover');
+                })
+                $('.menu-item').mouseout(function(event){
+                    $(event.target).removeClass('menu-item-hover');
+                })
+
+                //dynamically setting the size of the code browser and viewer
+                defineCodeBrowserHeight();
+
+                //dynamically resizes the height of the components
+                function defineCodeBrowserHeight(){
+                    var availableHeight = window.innerHeight- bottomMargin;
+                    $('#cb-content').css('height',availableHeight+'px');
+                    $('#tree').css('height',availableHeight+'px');
+                    $('#fbp_editor').css('height',(availableHeight/2)+'px');
+                    $('#svgFrame').css('height',(availableHeight/2)+'px');
+                }
+
+                //forcing the component size redrawing on window resize
+                $(window).resize(function(){
+                   defineCodeBrowserHeight();
+                })
+
+                $('#configComboBox').combobox();
+                $('#configComboBox').append('<option value="none">none</option>');
+
+            });
+        </script>
+    </head>
+    <body class="container">
+
+        <!-- NAVIGATION MENU !-->
+        <div ng-controller="menuController" id="top-menu">
+            <div class='menu-item' id='menu-cb'>Editor</div>
+            <div ng-class="{'enable_div': journal == true, 'disable_div': journal == false}" class='menu-item' id='menu-sj'>Systemd Journal</div>
+            <div ng-class="{'enable_div': cheat_sheet == true, 'disable_div': cheat_sheet == false}" class='menu-item' id='menu-sc'>Cheat Sheet</div>
+        </div>
+
+        <!-- CONTENT REGION !-->
+        <div id="tabs">
+            <div id="tabcont" class="tabcontents">
+                <!-- -------------------------------------------------------------- !-->
+                <!-- Editor !-->
+                <!-- -------------------------------------------------------------- !-->
+                <div ng-controller="RunFBPCode" id="cb">
+                    <!-- TOP OF THE PAGE !-->
+                    <div class="container" style="width: 100%;">
+
+                    <!-- CODDE FLOW TITLE !-->
+                    <div class='page-title'>Editor</div>
+
+                    <!--CODE FLOW CONTROLS ON THE TOP !-->
+                    <form ng-submit="syncGit()">
+                        <div class="headerControls" style="margin-right: -7px;">
+                            <div ng-submit="syncGit()" class="spin_sync"  us-spinner="{radius:8.5, width:3, length: 4}" spinner-key="spinner-1"></div>
+                            <input type="text" ng-model="repoUrl" placeholder="Git repository URL" style="outline: 0; width: 320px; margin-right: -2px;" class="inputControls" />
+                            <button type="submit" style="outline: 0; margin-left: -11px;" title="Sync repository git" tabindex="0" id="syncGit" ng-click="syncGit()" ng-disabled="buttonSyncDisabled"/><img src="imgs/button_sync.png"></button>
+                            <!--<button type="button" title="Commit" style="outline: 0; margin-left: -11px;" id="commitGit" ng-click="commitDiag()" ng-disabled="buttonSyncDisabled" href="#"><img src="imgs/button_commit.png"></button>-->
+                            <button type="button" ng-class="{'button_lib_on': libChecked == true, 'button_lib_off': libChecked == false}" ng-click="libChecked = !libChecked" title="Collapse library panel"></button>
+                            <button type="button" ng-class="{'button_code_on': codeChecked == true, 'button_code_off': codeChecked == false}" ng-click="codeChecked = !codeChecked" title="Collapse code panel" ></button>
+                            <button type="button" style="margin-right: 5px;" ng-class="{'button_svg_on': svgChecked == true, 'button_svg_off': svgChecked == false}" ng-click="svgChecked = !svgChecked" title="Collapse SVG panel"></button>
+                            <button type="button" ng-class="processLoginClass()" title="Login" ng-click="logged = !logged"></button>
+                        </div>
+                    </form>
+                </div>
+
+                <div style="vertical-align: text-bottom;">
+                    <div class="blueLabel" style="margin-left:20px; width:330px;">
+                        Library
+                    </div>
+                    <div class="blueLabel" >
+                        Code viewer <span>{{fileName}}</span>
+                    </div>
+                </div>
+                <div align="right" class="serviceStatus" style="margin-top: -48px; margin-right: -16px;">
+                    <table ng-class="{'enable_div': runJournal == true, 'disable_div': runJournal == false}" class="running_table">
+                        <tr>
+                            <td>
+                                <span><u>Status:</u> {{ServiceStatus}}</span>
+                            </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr style="height:45px;">
+                            <td>
+                                <select id="configComboBox" class="inputControls">
+                                    <option value="" ></option>
+                                </select>
+                            </td>
+                            <td>
+                                <button ng-class="processRunClass()" title="Run FBP code" ng-click="run()" id="runCode"></button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- SHOW NODE SOURCE CODE !-->
+                <!--Main container of all code browser content !-->
+                <div id="cb-content" class="row show-source" style="width: 100%; height: 100%; background-color:#2d3237">
+                    <!--Tree view !-->
+                    <div collapse="!libChecked" context-menu id="tree" class="col-md-4 tree-browser" data-target="menu-1" ng-class="{ 'highlight': highlight, 'expanded' : expanded }" style="float: left;" ng-attr-style="{{codeChecked || svgChecked && 'width: 350px;' || 'width: 100%;' }}">
+                        <js-tree id="jstree" ui-tree="rootTree" tree-events="select_node:nodeSelected;ready:readyCB" tree-ajax="/api/tree"></js-tree>
+                    </div>
+
+                    <!-- DROP DOWN MENU !-->
+                    <div class="dropdown" style="position: fixed; z-index: 9999;" id="menu-1">
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a class="pointer" role="menuitem" tabindex="1" ng-click="newFolder()">Create folder</a></li>
+                            <li><a class="pointer" role="menuitem" tabindex="2"  ng-click="newFile()">Create file</a></li>
+                            <li><a class="pointer" role="menuitem" tabindex="3" ng-click="remove()">Remove</a></li>
+                        </ul>
+                    </div>
+                    <!-- Contains the code viewer and the svg viewer !-->
+                    <div ng-attr-style="{{libChecked && 'margin-left: 360px;' || 'margin-left: 0px;' }}" style="background-color:#262a2e;">
+                        <div id="codeCheck" collapse="!codeChecked">
+                            <div ui-ace="{onChange: editorChanged}" ng-attr-style="{{codeChecked && !svgChecked && 'height: 100%;' || 'height: 50%;'}}" style="width: 100%; float: left;" id="fbp_editor"></div>
+                        </div>
+                        <div  id="svgCheck" collapse="!svgChecked" style="overflow-y: scroll; height: 100%; background-color:#262a2e;">
+                            <div id="svgFrame" style="width:100%;" ng-attr-style="{{svgChecked && !codeChecked && 'height: 100%; width:100%;' || 'height: 50%; width:100%;'}}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!--close tabcontents !-->
+
+
+
+            <!-- -------------------------------------------------------------- !-->
+            <!-- SYSTEMD JOURNAL !-->
+            <!-- -------------------------------------------------------------- !-->
+            <script>hljs.initHighlightingOnLoad();</script>
+            <div id="sj" ng-controller="SystemdJournald" class="systemd-journald">
+
+            <!-- HEADER CONTROLS !-->
+                <div class="container" style="width: 100%;">
+                    <div class='page-title'>Systemd Journal</div>
+
+                    <div class="headerControls">
+                        <input type="search" ng-model="searchText" placeholder="Search" class="inputControls" style="width:450px; outline: 0; margin-right: -11px;"/>
+                            <!--refresh button !-->
+                        <button ng-click="run()" style="outline: 0; background:transparent; border:0"><img src="imgs/button_refresh.png"></button>
+                    </div>
+                </div>
+
+                <!-- DATA TABLE !-->
+                <table cellpadding="0" cellspacing="0" border="0" id="table" class="table table-hover data-table sort display" style="font-size: 12px !important; background-color:#262a2e; color:#afb2b6;">
+                    <thead style="background-color:#2d3237; font-size:1.2em;">
+                        <tr>
+                            <th style="border:0;color:#33b7e9"> <a href="" ng-init="columnToOrder='__REALTIME_TIMESTAMP';reverse=!reverse" ng-click="columnToOrder='__REALTIME_TIMESTAMP';reverse=!reverse">Date</a></th>
+                            <th style="border:0;color:#33b7e9"> <a style="margin-left: 150px !important;" href="" ng-click="columnToOrder='SYSLOG_IDENTIFIER';reverse=!reverse">Unit</a></th>
+                            <th style="border:0;color:#33b7e9"> <a style="margin-left: 210px !important;" href="" ng-click="columnToOrder='MESSAGE';reverse=!reverse">Message</a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="cursor: pointer" ng-repeat="item in JournaldViewer | orderBy:columnToOrder:reverse | filter:searchText as results track by $index" >
+                            <td style="width: 200px; border:0;">{{(item.__REALTIME_TIMESTAMP / 1000) | date:'dd-MM-yyyy HH:mm'}}</td>
+                            <td class="unit" style="width:250px; border:0; ">{{item.SYSLOG_IDENTIFIER}}</td>
+                            <td class="message" style="border:0;" >{{item.MESSAGE}}</td>
+                            <td class="code" style="display: none"><div style="overflow:hidden">{{item.CODE_FILE}}</td>
+                        </tr>
+                        <tr ng-if="results.length == 0">
+                            <td><strong>No results found...</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div><!--Close Systemd Journal !-->
+
+            <!-- -------------------------------------------------------------- !-->
+            <!-- CHEAT SHEET !-->
+            <!-- -------------------------------------------------------------- !-->
+            <div ng-controller="cheatSheetController" id="sc" class="cheat_sheet" style="height:93vh;" >
+                <iframe style="width:100%; height:100%;" ng-src="{{cheatSheetUrl}}"></iframe>
+            </div>
+        </div><!--close tabs!-->
+    </body>
+</html>

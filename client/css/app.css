@@ -1,0 +1,341 @@
+.tree-browser {
+  /*overflow: auto;*/
+  overflow-x: hidden;
+
+  background-color: #2d3237; /*ronaldo: Tree view background*/
+  width: 350px;
+
+
+}
+.file-viewer {
+  /*padding-left: 50px;*/ /*ronaldo*/
+  overflow: auto;
+  background-color: #2d3237;
+  position:absolute; /*ronaldo*/
+  right: 0px; /*ronaldo*/
+  left:350px;
+
+}
+.jstree-custom-folder{
+  background-image: url('../imgs/folder.png') !important;
+  background-position: 0 !important;
+}
+.jstree-custom-file {
+  background-image: url('../imgs/file.png') !important;
+  background-position: 0 !important;
+}
+#fbp_editor {
+	width: 100%;
+	height: 80%;
+}
+
+.errorHighlight{
+  position:absolute;
+  z-index:20;
+  background-color:#F4B9B7;
+}
+
+thead, tbody {
+  display:block;
+}
+
+tbody {
+    height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+#top-menu{
+  position: fixed;
+  left:0px;
+  right:0px;
+  height: 40px;
+  background-color: #262a2e;
+  z-index: 999;
+  box-sizing: border-box;
+  padding-left: 35px;
+}
+.menu-item{
+  display:inline-block;
+  margin-right: 40px;
+  font-size: 0.9em;
+  color: 8c8c8c;
+  height: 40px;
+  padding-top: 10px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.menu-item-selected{
+  color:white;
+  border-bottom: 3px solid #33b7e9;
+}
+.menu-item-hover{
+  color:white;
+}
+.tabcontents{
+    /*ronaldo*/
+    margin-top: 50px;
+    background-color: #F0F0F0;
+}
+@font-face{
+	font-family:clearSans;
+	src:url(../fonts/ClearSans-Thin.ttf);
+	font-weight:thin;
+}
+.page-title{
+font-family: clearSans;
+  height: 105px;
+  color:#8c9196;
+  font-size: 4em;
+  font-weight:lighter;
+  background-color: #2d3237;
+  float:left;
+}
+.page-subtitle{
+  padding-left: 20px;
+  height: 68px;
+  background-color: #2d3237;
+  color:#8c9196;
+  float: left;
+}
+.subtitle{
+  margin-right: 210px;
+  color:33b7e9;
+  text-transform:uppercase;
+  font-size: 0.9em;
+  font-weight: bold;
+}
+.headerControls{
+	margin-top: 17px;
+	float:right;
+	margin-right: 0px;
+}
+.inputControls{
+    height: 40px;
+    background-color: #262a2e;
+    border: 0;
+    color: #8c8c8c;
+    margin-right: 10px;
+    padding-left: 10px;
+    border-radius: 20px;
+    /*border-bottom: solid 2px #c9c9c9;*/
+}
+button {
+    background: transparent;
+    border: 0;
+}
+
+#sj{
+    margin-top: 50px;
+}
+#cb{
+    background-color: #2d3237;
+}
+#btRefresh{
+	border:0;
+	background: transparent;
+}
+.serviceStatus{
+
+    background-color: #2d3237;
+    box-sizing: border-box;
+    padding-right: 25px;
+    height: 30px;
+    color: #4b535b;
+	display: inline-block;
+	float: right;
+}
+.blueLabel{
+	color:#33b7e9;
+	text-transform: capitalize;
+	height: 30px;
+	box-sizing: border-box;
+	display: inline-block;
+	font-weight: bold;
+}
+
+.bluelabel span {
+    text-transform: none;
+    color:white;
+    font-weight:normal
+}
+
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+  background-color: #4f5357;
+}
+
+::-webkit-scrollbar-track {
+    /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); */
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: #33b7e9;
+    /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); */
+}
+::-webkit-scrollbar-corner{
+  background-color: #4f5357;
+}
+iframe{
+    border:0;
+}
+/* Overwrite jquery ui class*/
+.ui-button-icon-only {
+    width: 2.2em;
+    height: 20px;
+    margin-bottom: 2px;
+}
+
+.ui-widget {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    font-size: 14px !important;
+}
+
+.button_code_on {
+    background:url(../imgs/code_on.png);
+    background-repeat: no-repeat;
+    width:41px;
+    height:45px;
+    border: 0;
+    position: relative;
+    bottom: -17;
+    outline: 0;
+}
+
+.button_code_off {
+    background:url(../imgs/code_off.png);
+    background-repeat: no-repeat;
+    width:41px;
+    height:45px;
+    border: 0;
+    position: relative;
+    bottom: -17;
+    outline: 0;
+}
+
+.button_svg_on {
+    background:url(../imgs/graph_on.png);
+    background-repeat: no-repeat;
+    width:41px;
+    height:45px;
+    border: 0;
+    position: relative;
+    bottom: -17;
+    outline: 0;
+}
+
+.button_svg_off {
+    background:url(../imgs/graph_off.png);
+    background-repeat: no-repeat;
+    width:41px;
+    height:45px;
+    border: 0;
+    position: relative;
+    bottom: -17;
+    outline: 0;
+}
+
+.button_lib_on {
+    background:url(../imgs/tree_view_on.png);
+    background-repeat: no-repeat;
+    width:41px;
+    height:45px;
+    border: 0;
+    position: relative;
+    bottom: -17;
+    outline: 0;
+}
+
+.button_lib_off {
+    background:url(../imgs/tree_view_off.png);
+    background-repeat: no-repeat;
+    width:41px;
+    height:45px;
+    border: 0;
+    position: relative;
+    bottom: -17;
+    outline: 0;
+}
+
+.button_login_on {
+    background:url(../imgs/login_on.png);
+    background-repeat: no-repeat;
+    width:231px;
+    height:45px;
+    border: 0;
+    position: relative;
+    bottom: -17;
+    outline: 0;
+}
+
+.button_login_off {
+    background:url(../imgs/login_off.png);
+    background-repeat: no-repeat;
+    width:231px;
+    height:45px;
+    border: 0;
+    position: relative;
+    bottom: -17;
+    outline: 0;
+}
+
+.button_run_off {
+    background:url(../imgs/button_run_off.png);
+    background-repeat: no-repeat;
+    width:46px;
+    height:45px;
+    position: relative;
+    outline: 0;
+    display: inline;
+}
+
+.button_run_on {
+    background:url(../imgs/button_run_on.png);
+    background-repeat: no-repeat;
+    width:46px;
+    height:45px;
+    position: relative;
+    outline: 0;
+    display: inline;
+}
+
+.button_stop {
+    background:url(../imgs/button_stop.png);
+    background-repeat: no-repeat;
+    width:46px;
+    height:45px;
+    position: relative;
+    outline: 0;
+    display: inline;
+}
+
+.spin_sync {
+    position: relative;
+    bottom: -17;
+    float: left;
+    height: 25px;
+    margin-right: 18px;
+    margin-top: 8px;
+    position: relative;
+}
+
+.running_table {
+    border: 0;
+    bottom: -17px;
+    position: relative;
+    float: left;
+    color: #4b535b;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    margin-right: 18px;
+}
+
+.disable_div {
+    display: none;
+}
+
+.enable_div {
+    display: inline;
+}

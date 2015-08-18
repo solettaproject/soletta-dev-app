@@ -1,0 +1,4 @@
+/repos/*
+/node_modules/*
+/client/libs/*
+/sessions
