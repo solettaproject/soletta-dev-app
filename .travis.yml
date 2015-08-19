@@ -1,0 +1,10 @@
+language: node_js
+rvm:
+ - "0.12"
+branches:
+ - master
+
+install:
+ - npm install -g bower
+ - npm install --save
+ - bower install
