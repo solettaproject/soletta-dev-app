@@ -1,6 +1,6 @@
 # Soletta Development Application
 
-[![Build Status](https://travis-ci.org/solettaproject/soletta-dev-app.svg)](https://travis-ci.org/solettaproject/soletta)
+[![Build Status](https://travis-ci.org/solettaproject/soletta-dev-app.svg)](https://travis-ci.org/solettaproject/soletta-dev-app)
 
 **Soletta Development Application** provides a web-based environment where developers can write, visualize, modify, run, test and debug their Soletta FBP programs. The Soletta Development Application is supposed to run on your target board and it then exposes the development environment through a web server application based on node.js.
 
