@@ -257,7 +257,6 @@
                 $scope.run = function() {
                     if ($scope.isServiceRunning) {
                         //Post stop service
-                        console.log("STOP");
                         $http.post('/api/fbp/stop').success(function(data) {
                             if (data == 1) {
                                alert("FBP Service failed to stop");
@@ -405,6 +404,14 @@
                             //Saving previous file
                             $scope.saveFile(filePath, editor.getSession().getValue());
                         }
+                    }
+
+                    if ($scope.isServiceRunning) {
+                        $http.post('/api/fbp/stop').success(function(data) {
+                            if (data == 1) {
+                                alert("FBP Service failed to stop. Process should be stopped manually");
+                            }
+                        });
                     }
                 });
 
