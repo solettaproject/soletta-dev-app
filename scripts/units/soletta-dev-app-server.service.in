@@ -4,8 +4,8 @@ After=warn-boot.service
 
 [Service]
 ExecStart=/usr/bin/node PATH/server/app.js 1> /dev/null 2>&1
-Enviroment=SOL_LOG_PRINT_FUNCTION="journal"
-Enviroment=NODE_ENV=production
+Environment=SOL_LOG_PRINT_FUNCTION="journal"
+Environment=NODE_ENV=production
 
 [Install]
 WantedBy=multi-user.target
