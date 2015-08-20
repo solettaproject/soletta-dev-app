@@ -1,6 +1,7 @@
-# Soletta Development Application
-
 [![Build Status](https://travis-ci.org/solettaproject/soletta-dev-app.svg)](https://travis-ci.org/solettaproject/soletta-dev-app)
+[![npm version](https://badge.fury.io/js/soletta-dev-app.svg)](http://badge.fury.io/js/soletta-dev-app)
+
+# Soletta Development Application
 
 **Soletta Development Application** provides a web-based environment where developers can write, visualize, modify, run, test and debug their Soletta FBP programs. The Soletta Development Application is supposed to run on your target board and it then exposes the development environment through a web server application based on node.js.
 
@@ -50,11 +51,17 @@ To install on common linux distros:
 
 #### Automatic Installation (Recommended):
 
-To install **Solletta Development Application** run the script:
+To install clone github repo or install it using npm:
+
+        npm install soletta-dev-app
+
+Run the install script in the root folder of the **Solletta Development Application** project
 
         ./install.sh
 
 #### Manual Installation:
+
+Clone the github repository and run the followings
 
 ##### Install back-end depedencies (as server user):
         npm install --save
