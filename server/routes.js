@@ -312,19 +312,25 @@
             var server_name = getServerName(repo_url);
             var repo_path = home_dir(current_user(req)) + server_name + "/" + repo_name;
             var tmp_path = tmp_dir(current_user(req)) + server_name + "/" + repo_name;
-            execOnServer("git clone --quiet " + repo_url + " " + tmp_path,
-                function(returns) {
-                    if (returns.error === true) {
-                        res.status(400).send(returns.message);
-                    } else {
-                         execOnServer("mkdir -p " + repo_path +
-                                      " && cp -r " + tmp_path + "/* " + repo_path +
-                                      " && rm -rf /tmp/" + server_name,
-                                    function(returns) {
-                             res.send(returns.message);
-                         });
-                    }
-                });
+            execOnServer("rm -rf " + tmp_path, function(returns) {
+                if (returns.error === true) {
+                    res.status(400).send(returns.message);
+                } else {
+                    execOnServer("git clone --quiet " + repo_url + " " + tmp_path,
+                    function(returns) {
+                        if (returns.error === true) {
+                            res.status(400).send(returns.message);
+                        } else {
+                            execOnServer("mkdir -p " + repo_path +
+                                         " && cp -r " + tmp_path + "/* " + repo_path +
+                                         " && rm -rf /tmp/" + server_name,
+                            function(returns) {
+                                res.send(returns.message);
+                            });
+                        }
+                    });
+                }
+            });
         }
     });
 
