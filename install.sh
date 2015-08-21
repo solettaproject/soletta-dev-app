@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This file is part of the Soletta Project
 #
@@ -35,6 +35,8 @@ print_need_dep () {
 }
 
 RETVAL=0
+SYSTEMD_SERVICE_PATH="/etc/systemd/system"
+
 test_dep () {
     SILENT=$2
     PKG_NAME=$3
@@ -65,6 +67,9 @@ fi
 test_dep "node" 1
 if [ $RETVAL -eq 1 ]; then
     test_dep "nodejs" 0 "nodejs"
+    NODE_BIN_NAME="nodejs"
+else
+    NODE_BIN_NAME="node"
 fi
 
 test_dep "sol-fbp-runner" 1
@@ -78,20 +83,29 @@ test_dep "dot" 0 "graphviz"
 
 test_dep "npm" 0 "npm"
 
-test_dep "bower" 1
+test_dep "bower" 1 2>/dev/null
 if [ $RETVAL -eq 1 ]; then
      print_need_dep "bower"
      echo "sudo npm install -g bower"
      exit 1
+else
+     BOWER=$(bower -v)
+     if [ -z "$BOWER" ]; then
+        echo "If you are running distro debian based machine run:"
+        echo "sudo apt-get install nodejs-legacy"
+        exit 1
+    fi
 fi
 
 npm install
 bower install
+
 echo "Installing required services..."
 SERVER_PATH=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
-su -c "cp $SERVER_PATH/scripts/units/fbp-runner@.service /lib/systemd/system/"
-su -c "cp $SERVER_PATH/scripts/units/soletta-dev-app-server.service.in /lib/systemd/system/soletta-dev-app-server.service"
-su -c "sed -i "s@PATH@"$SERVER_PATH"@" /lib/systemd/system/soletta-dev-app-server.service"
+su -c "cp $SERVER_PATH/scripts/units/fbp-runner@.service $SYSTEMD_SERVICE_PATH/ &&
+       cp $SERVER_PATH/scripts/units/soletta-dev-app-server.service.in $SYSTEMD_SERVICE_PATH/soletta-dev-app-server.service &&
+       sed -i "s@PATH@"$SERVER_PATH"@" $SYSTEMD_SERVICE_PATH/soletta-dev-app-server.service &&
+       sed -i "s@"NODE_BIN_NAME"@"$NODE_BIN_NAME"@" $SYSTEMD_SERVICE_PATH/soletta-dev-app-server.service"
 systemctl daemon-reload
 echo "to start server run:"
 echo "systemctl start soletta-dev-app-server"
