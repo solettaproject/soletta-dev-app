@@ -1,4 +1,4 @@
-[![Build Status](https://semaphoreci.com/api/v1/projects/2a301369-08f0-4bb0-9ab2-d533cae1e3c6/519205/badge.svg)](https://semaphoreci.com/lstrano/soletta-dev-app)
+[![Build Status](https://semaphoreci.com/api/v1/projects/2a301369-08f0-4bb0-9ab2-d533cae1e3c6/519205/shields_badge.svg)](https://semaphoreci.com/lstrano/soletta-dev-app)
 [![npm version](https://badge.fury.io/js/soletta-dev-app.svg)](http://badge.fury.io/js/soletta-dev-app)
 
 # Soletta Development Application
