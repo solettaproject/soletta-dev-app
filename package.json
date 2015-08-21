@@ -1,7 +1,7 @@
 {
   "name": "soletta-dev-app",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.0.3",
+  "description": "Soletta Development Application provides a web-based environment where developers can write, visualize, modify, run, test and debug their Soletta FBP programs. The Soletta Development Application is supposed to run on your target board and it then exposes the development environment through a web server application based on node.js.",
   "main": "index.js",
   "dependencies": {
     "body-parser": "~1.12.4",
@@ -22,8 +22,16 @@
   "scripts": {
     "test":"protractor protractor.config.js"
   },
+  "keywords": [
+    "soletta",
+    "embedded",
+    "fbp",
+    "flow_based_programming",
+    "iot",
+    "internet_of_things"
+  ],
   "author": "",
-  "license": "BSD 3-Clause",
+  "license": "BSD-3-Clause",
   "devDependencies": {
     "protractor": "~2.1.0",
     "expect.js": "~0.3.1",
