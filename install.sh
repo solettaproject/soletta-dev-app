@@ -85,7 +85,7 @@ if [ $RETVAL -eq 1 ]; then
      exit 1
 fi
 
-npm install --save
+npm install
 bower install
 echo "Installing required services..."
 SERVER_PATH=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)

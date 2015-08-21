@@ -64,7 +64,7 @@ Run the install script in the root folder of the **Solletta Development Applicat
 Clone the github repository and run the followings
 
 ##### Install back-end depedencies (as server user):
-        npm install --save
+        npm install
 
 ##### Install front-end depedencies (as server user):
         bower install
