@@ -52,6 +52,13 @@ test_dep () {
     fi
 }
 
+if [ "$1" == "-h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ]; then
+    echo "Usage: install.sh PATH"
+    echo "  PATH: Installation path that soletta dev-app will be installed."
+    echo "  If no path is provided, it will use the current dir of install.sh"
+    exit 0
+fi
+
 test_dep "systemctl" 1
 if [ $RETVAL -eq 1 ]; then
     print_need_dep "systemd"
@@ -102,6 +109,11 @@ bower install
 
 echo "Installing required services..."
 SERVER_PATH=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
+if [ -n "$1" ]; then
+    cp -r $SERVER_PATH $1
+    SERVER_PATH=$1
+fi
+
 su -c "cp $SERVER_PATH/scripts/units/fbp-runner@.service $SYSTEMD_SERVICE_PATH/ &&
        cp $SERVER_PATH/scripts/units/soletta-dev-app-server.service.in $SYSTEMD_SERVICE_PATH/soletta-dev-app-server.service &&
        sed -i "s@PATH@"$SERVER_PATH"@" $SYSTEMD_SERVICE_PATH/soletta-dev-app-server.service &&
