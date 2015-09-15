@@ -42,9 +42,9 @@
     /* GET home page. */
     router.get('/', function(req, res) {
         fs.mkdir(tmp_dir(current_user(req)), function() {
-            console.log('Dir ' + tmp_dir(current_user(req)) + 'already exists!');
+            console.log('Accessed tmp dir -> ' + tmp_dir(current_user(req)));
+            res.render('index');
         });
-        res.render('index');
     });
 
     /* Serve the Tree */

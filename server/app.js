@@ -56,7 +56,9 @@
             secret: 'keepitsecret',
             resave: true,
             saveUninitialized: true,
-            store: new SessionStore
+            store: new SessionStore({
+                retries: 500
+            })
         }));
         var jConf = getConfigurationJson();
 
