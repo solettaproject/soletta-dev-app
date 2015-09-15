@@ -66,7 +66,7 @@
                         }, refreshPeriod);
                     }
                 });
-                $scope.libChecked = true;
+                $scope.libChecked = false;
                 $scope.codeChecked = true;
                 $scope.svgChecked = true;
                 $scope.logged = false;
@@ -81,11 +81,12 @@
                 editor.commands.removeCommand("showSettingsMenu");
                 editor.$blockScrolling = Infinity;
                 editor.session.setOption("useWorker", false);
-                editor.setReadOnly(true);
                 editor.setFontSize(15);
                 editor.setTheme('ace/theme/monokai');
 
-                $scope.fileViewer = 'Please select a file to view its contents';
+                $scope.fbpType = true;
+                aceConfig.set("modePath", "js/ace/");
+                $scope.fileViewer = '# Write FBP Code here.';
                 $scope.buttonSyncDisabled = false;
                 $scope.nodeSelected = function(e, data) {
                     var _l = data.node.li_attr;
@@ -713,6 +714,7 @@
                         "repo_url": repo,
                     }}).success(function(data) {
                         $scope.refreshTree();
+                        $scope.libChecked = true;
                         $scope.stopSpin();
                     }).error(function(data){
                         alert(data);
