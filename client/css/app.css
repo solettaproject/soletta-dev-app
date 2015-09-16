@@ -339,3 +339,7 @@ iframe{
 .enable_div {
     display: inline;
 }
+
+.ui-dialog {
+    z-index: 9999 !important ;
+}
