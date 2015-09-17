@@ -44,6 +44,7 @@
 
     try {
         var app = express();
+        var jConf = getConfigurationJson();
 
         app.use(session({
             genid: function(req) {
@@ -57,10 +58,10 @@
             resave: true,
             saveUninitialized: true,
             store: new SessionStore({
-                retries: 500
+                retries: 500,
+                path: jConf.sessions_dir
             })
         }));
-        var jConf = getConfigurationJson();
 
         // view engine setup
         app.set('views', path.join(__dirname, 'views'));

@@ -119,6 +119,12 @@ The configuration file has the following attributes:
           Choose where to store tmp files.
           Default: /tmp
 
+    sessions_dir:
+          Choose where to store sessions files.
+          Default: ./sessions
+          If the folder does not exists, it will be created.
+          Where ./ means root of the server folder.
+
     journal_access:
           Allows users to access the journal tab.
           Default: true
