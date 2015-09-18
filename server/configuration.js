@@ -29,14 +29,19 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 module.exports = function () {
     var jConf = null;
-    this.getConfigurationJson = function() {
+    this.getConfigurationJson = function(confPath) {
         try {
             //Verify if it is first run
             if (!jConf) {
                 var fs = require('fs');
                 var path = require('path');
-                var server_folder = path.join(__dirname, '..', 'server');
-                var file = fs.readFileSync(server_folder + '/configuration.json', 'utf8');
+                var file;
+                if (!confPath) {
+                    var server_folder = path.join(__dirname, '..', 'server');
+                    file = fs.readFileSync(server_folder + '/configuration.json', 'utf8');
+                } else {
+                    file = fs.readFileSync(confPath, 'utf8');
+                }
                 jConf = JSON.parse(file);
                 return jConf;
             } else {
