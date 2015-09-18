@@ -100,9 +100,15 @@ Depending of the nodejs installation the command might be:
 
 ## Server configuration
 
-The sever configuration file can be found on server/configuration.json
+Default sever configuration file can be found in path ```server/configuration.json```.
 
-The configuration file has the following attributes:
+The server accepts a configuration file as a parameter, to do it just pass the path of the custom configuration file when running the server for example:
+
+        node server/app.js /tmp/my_custom_configuration.json
+
+If no argument is provided it will get the default server configuration file.
+
+#### Configuration attributes
 
     server_port:
          The port listened by the server. Default: 3000
