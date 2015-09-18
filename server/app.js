@@ -44,7 +44,15 @@
 
     try {
         var app = express();
-        var jConf = getConfigurationJson();
+        var jConf;
+        var args = process.argv.slice(2);
+        var server = process.argv.slice(1)[0];
+        console.log(server)
+        if (args.length === 0 || server.indexOf("protractor")) {
+            jConf = getConfigurationJson();
+        } else {
+            jConf = getConfigurationJson(args[0]);
+        }
 
         app.use(session({
             genid: function(req) {
