@@ -35,9 +35,7 @@
         function ($compile, $scope, $http, $interval, $document, broadcastService,
                   FetchFileFactory, usSpinnerService, svConf) {
                 var isRunningSyntax = false;
-                var isRunningSave = false;
                 var promiseCheckSyntax;
-                var promiseSaveFile;
                 var promiseRunViewer;
                 var markId;
                 var diag;
@@ -46,7 +44,6 @@
                 var isLeaf;
                 var rootTree;
                 var dataTree;
-                $scope.saveFilePeriod = 5000;
                 $scope.syntaxCheckRefreshPeriod = 1100;
                 $scope.runConf = false;
                 $scope.loginConf = false;
@@ -57,7 +54,6 @@
                     $scope.runJournal = data.journal_access;
                     $scope.runDialogRefreshPeriod = parseInt(data.run_dialog_refresh_period);
                     $scope.syntaxCheckRefreshPeriod = parseInt(data.syntax_check_refresh_period);
-                    $scope.saveFilePeriod = parseInt(data.save_file_period);
                     var refreshPeriod = parseInt(data.fbp_service_status_refresh_period);
                     if ($scope.runJournal === true) {
                         $scope.getServiceStatus();
@@ -485,10 +481,6 @@
                             }, $scope.syntaxCheckRefreshPeriod);
                 };
 
-                $scope.saveFileStop = function() {
-                    $interval.cancel(promiseSaveFile);
-                };
-
                 $scope.saveFile = function(path, body) {
                     if (body && path && isLeaf) {
                         var repo = path.split("repos/")[1].split("/")[0];
@@ -499,33 +491,17 @@
                                           "file_body": body
                                          }
                                  });
-                            $scope.saveFileStop();
                         }
                     }
                 };
 
-                $scope.saveFileStart = function() {
-                    $scope.saveFileStop();
-                    promiseSaveFile = $interval(
-                            function () {
-                                var fbpCode = editor.getSession().getValue();
-                                if (fbpCode && filePath && isLeaf) {
-                                    $scope.saveFile(filePath, fbpCode);
-                                }
-                            }, $scope.saveFilePeriod);
-                };
-
                 $scope.editorChanged = function (e) {
+                    // Lets put some interfaces like * that will warn user
+                    //the file has changed
                     if (isRunningSyntax === false) {
                         isRunningSyntax = true;
                         $scope.checkSyntaxStart();
                         isRunningSyntax = false;
-                    }
-
-                    if (isRunningSave === false) {
-                        isRunningSave = true;
-                        $scope.saveFileStart();
-                        isRunningSave = false;
                     }
                 };
 

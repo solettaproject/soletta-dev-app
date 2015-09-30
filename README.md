@@ -163,10 +163,6 @@ If no argument is provided it will get the default server configuration file.
           The refresh period of the fbp runer service status, in miliseconds.
           Default 1000 ms
 
-    save_file_period:
-          Period that it will save your file when editing it
-          Default: 5000 ms
-
     run_dialog_refresh_period:
           The refresh period of the output dialog, where stdout/stderr of
           running fbp file is displayed.
