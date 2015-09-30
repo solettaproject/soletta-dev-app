@@ -535,7 +535,7 @@
                             autoOpen: false,
                             modal: true,
                             position: { at: "center top"},
-                            height: 220,
+                            height: 170,
                             width: 412,
                             resizable: 'disable',
                             show: { effect: "fade", duration: 300 },
