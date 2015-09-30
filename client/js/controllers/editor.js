@@ -528,36 +528,6 @@
                     }
                 };
 
-                function name_dialog(callback) {
-                    var dialog = $('<div></div>').html($compile('<input class="inputControls" type="text" ng-model="name" />')($scope)).
-                        dialog({
-                            title: "Choose a name",
-                            autoOpen: false,
-                            modal: true,
-                            position: { at: "center top"},
-                            height: 167,
-                            width: 270,
-                            show: { effect: "fade", duration: 300 },
-                            hide: {effect: "fade", duration: 300 },
-                            resizable: 'disable',
-                            buttons: {
-                                "Apply": function() {
-                                    $(this).dialog("close");
-                                    callback(true);
-                                },
-                                Cancel: function() {
-                                    $(this).dialog("close");
-                                    callback(false);
-                                }
-                            },
-                            close: function(ev, ui){
-                                callback(false);
-                                $(this).dialog("close");
-                            }
-                        });
-                    dialog.dialog("open");
-                }
-
                 function sure_dialog(title, description, callback) {
                     var dialog = $('<div></div>').html(description).
                         dialog({
@@ -596,25 +566,48 @@
                         cached.pop();
                         file = cached.join("/");
                     }
-                    var repo = file.split("repos/")[1].split("/")[0];
-                    if (repo !== "solettaproject") {
-                        name_dialog(function(close_id) {
-                            var name = "/" + $scope.name;
-                            if (close_id) {
-                                $http.post('/api/git/repo/create/folder',
-                                    {params: {
-                                                 "folder_path": file + name
-                                             }
+                    var dialog = $('<div></div>').
+                                 html($compile('<input class="inputControls"' +
+                                               ' type="text" style="width: 256px; outline: 0;"' +
+                                               ' ng-model="folder_name" />')($scope)).
+                    dialog({
+                        title: "Choose the name of the new folder",
+                        autoOpen: false,
+                        modal: true,
+                        position: { at: "center top"},
+                        height: 167,
+                        width: 300,
+                        show: { effect: "fade", duration: 300 },
+                        hide: {effect: "fade", duration: 300 },
+                        resizable: 'disable',
+                        buttons: {
+                            "Apply": function() {
+                                var name = "/" + $scope.folder_name;
+                                if (name) {
+                                    $http.post('/api/git/repo/create/folder',
+                                    {
+                                        params: {
+                                            "folder_path": file + name
+                                        }
                                     }).success(function(data) {
                                         $scope.refreshTree();
                                     }).error(function(){
                                         alert("Oh uh, something went wrong. Try again");
                                     });
+                                } else {
+                                    alert("Oh uh, something went wrong. Try again");
+                                }
+                                $(this).dialog("close");
+                            },
+                            Cancel: function() {
+                                $(this).dialog("close");
+                                }
+                            },
+                            close: function(ev, ui){
+                                $(this).dialog("close");
                             }
-                        });
-                    } else {
-                        alert("You can't modify solettaproject repository");
-                    }
+                    });
+                    dialog.dialog("open");
                 };
 
                 $scope.newFile = function () {
@@ -625,28 +618,51 @@
                             cached.pop();
                             file = cached.join("/");
                         }
-                        var tmp = file.split("repos/")[1];
-                        var repo = tmp.split("/")[0];
-                        if (repo !== "solettaproject") {
-                            name_dialog(function(close_id) {
-                                var name = "/" + $scope.name;
-                                if (close_id) {
-                                    $http.post('/api/git/repo/create/file',
-                                        {params: {
-                                                     "file_path": file + name
-                                                 }
-                                        }).success(function(data) {
-                                            $scope.refreshTree();
-                                        }).error(function(){
-                                            alert("Oh uh, something went wrong. Try again");
-                                        });
-                                }
-                            });
-                        } else {
-                            alert("You can't modify solettaproject repository");
-                        }
+                        var dialog = $('<div></div>').
+                                   html($compile('<input class="inputControls"' +
+                                                 ' type="text" style="width: 256px; outline: 0;"' +
+                                                 ' ng-model="file_name" />')($scope)).
+                        dialog({
+                          title: "Choose the name of the new file",
+                          autoOpen: false,
+                          modal: true,
+                          position: { at: "center top"},
+                          height: 167,
+                          width: 300,
+                          show: { effect: "fade", duration: 300 },
+                          hide: {effect: "fade", duration: 300 },
+                          resizable: 'disable',
+                          buttons: {
+                              "Apply": function() {
+                                  var name = "/" + $scope.file_name;
+                                  if (name) {
+                                      $http.post('/api/git/repo/create/file',
+                                      {
+                                          params: {
+                                              "file_path": file + name
+                                          }
+                                      }).success(function(data) {
+                                          $scope.refreshTree();
+                                      }).error(function(){
+                                          alert("Oh uh, something went wrong. Try again");
+                                      });
+                                  } else {
+                                      alert("Oh uh, something went wrong. Try again");
+                                  }
+                                  $(this).dialog("close");
+                              },
+                              Cancel: function() {
+                                  $(this).dialog("close");
+                                  }
+                              },
+                              close: function(ev, ui){
+                                  $(this).dialog("close");
+                              }
+                      });
+                      dialog.dialog("open");
                     } else {
-                        console.log("Error: file not selected");
+                        console.log("Error: repository not selected");
+                        alert("Folder destination must be selected!");
                     }
                 };
 
