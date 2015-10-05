@@ -259,6 +259,28 @@ iframe{
     outline: 0;
 }
 
+.button_save_on {
+    background:url(../imgs/button_save_en.png);
+    background-repeat: no-repeat;
+    width:41px;
+    height:45px;
+    border: 0;
+    position: relative;
+    bottom: -17;
+    outline: 0;
+}
+
+.button_save_off {
+    background:url(../imgs/button_save_dis.png);
+    background-repeat: no-repeat;
+    width:41px;
+    height:45px;
+    border: 0;
+    position: relative;
+    bottom: -17;
+    outline: 0;
+}
+
 .button_login_on {
     background:url(../imgs/login_on.png);
     background-repeat: no-repeat;

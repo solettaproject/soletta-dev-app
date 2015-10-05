@@ -48,6 +48,7 @@
                 $scope.runConf = false;
                 $scope.loginConf = false;
                 $scope.runJournal = false;
+                $scope.shouldSave = false;
                 svConf.fetchConf().success(function(data){
                     $scope.runConf = data.run_fbp_access;
                     $scope.loginConf = data.login_system;
@@ -79,6 +80,7 @@
                 editor.session.setOption("useWorker", false);
                 editor.setFontSize(15);
                 editor.setTheme('ace/theme/monokai');
+                editor.keyBinding.origOnTextInput = editor.keyBinding.onTextInput;
 
                 $scope.fbpType = true;
                 aceConfig.set("modePath", "js/ace/");
@@ -93,22 +95,20 @@
                     $scope.owner = rfinal[1];
                     $scope.repo = rfinal[2];
                     $scope.getConfigurationlist(_l.id);
-                    if (filePath && isLeaf) {
-                        $scope.saveFile(filePath, editor.getSession().getValue());//Saving previous file
-                    }
                     isLeaf = _l.isLeaf;
-                    filePath = _l.id;
                     aceConfig.set("modePath", "libs/ace-builds/src-min/");
-                    $scope.fileName = ': ' + filePath.split("/").pop(); //getting the selected node name
                     if (_l.isLeaf) {
                         FetchFileFactory.fetchFile(_l.base).then(function(data) {
                             var _d = data.data;
+                            var previousContent = editor.getSession().getValue();
                             if (typeof _d == 'object') {
                                 _d = JSON.stringify(_d, undefined, 2);
                             }
+                            $scope.setEditorContent(_d, previousContent, filePath);
+                            filePath = _l.id;
+                            $scope.fileName = ': ' + filePath.split("/").pop(); //getting the selected node name
                             var mode = modelist.getModeForPath(filePath).mode;
                             editor.session.setMode(mode);
-                            editor.getSession().setValue(_d);
                             var type_file = _l.base.slice(-3);
                             if (type_file === "fbp") {
                                 $scope.fbpType = true;
@@ -127,18 +127,20 @@
                         });
                         $scope.root = false;
                     } else {
+                        filePath = _l.id;
+                        $scope.fileName = ': ' + filePath.split("/").pop(); //getting the selected node name
                         editor.setReadOnly(true);
                         editor.setHighlightActiveLine(false);
                         if (data.node.parent === "#") {
                             $scope.root = true;
-                            editor.getSession().setValue('Please select a file to view its contents');
+                            $scope.setEditorContent('Please select a file to view its contents', null, null);
                         } else {
                             if (data.node.parents[1] === "#") {
                                 $scope.root = true;
-                                editor.getSession().setValue('Please select a file to view its contents');
+                                $scope.setEditorContent('Please select a file to view its contents', null, null);
                             } else {
                                 if (!isLeaf) {
-                                    editor.getSession().setValue('Please select a file to view its contents');
+                                    $scope.setEditorContent('Please select a file to view its contents', null, null);
                                 }
                                 $scope.root = false;
                             }
@@ -160,6 +162,23 @@
                         });
                     }
                 }
+
+                $scope.setEditorContent = function (content, previousContent, savePath) {
+                    if ($scope.shouldSave === false || !previousContent) {
+                        editor.getSession().setValue(content);
+                    } else {
+                        sure_dialog("Save", "The file was changed. Would you like to save it?",
+                            function(close_id) {
+                                if(close_id) {
+                                    $scope.saveFile(savePath, previousContent);
+                                    editor.getSession().setValue(content);
+                                } else {
+                                    editor.getSession().setValue(content);
+                                }
+                            });
+                        $scope.shouldSave = false;
+                    }
+                };
 
                 $scope.getConfigurationlist = function (repo_id) {
                     if ($scope.owner && $scope.repo) {
@@ -239,7 +258,7 @@
                     promiseRunViewer = $interval(function () { $scope.getOutput(); }, $scope.runDialogRefreshPeriod);
                 };
 
-            $scope.getOutput = function () {
+                $scope.getOutput = function () {
                     $http.get('/api/journald',
                     {
                         params: {
@@ -277,9 +296,6 @@
                                     $scope.openRunDialog();
                                 } else {
                                     alert("FBP Failed to run");
-                                }
-                                if (filePath) {
-                                    $scope.saveFile(filePath, editor.getSession().getValue());
                                 }
                             }).error(function(){
                                 $scope.openRunDialog();
@@ -395,24 +411,19 @@
                     diag.dialog("open");
                 };
 
-                window.addEventListener("beforeunload", function (e) {
-                    if (filePath) {
-                        var repo = filePath.split("repos/")[1].split("/")[0];
-                        if (repo !== "solettaproject") {
-                            //Saving previous file
-                            $scope.saveFile(filePath, editor.getSession().getValue());
+                window.onbeforeunload = onBeforeUnload_Handler;
+                function onBeforeUnload_Handler(){
+                    $http.post('/api/fbp/stop').success(function(data) {
+                        if (data == 1) {
+                            alert("FBP Service failed to stop. Process should be stopped manually");
                         }
+                    });
+                    if ($scope.shouldSave === true) {
+                        return "The file was changed and the data was not saved.";
+                    } else {
+                        return undefined;
                     }
-
-                    if ($scope.isServiceRunning) {
-                        $http.post('/api/fbp/stop').success(function(data) {
-                            if (data == 1) {
-                                alert("FBP Service failed to stop. Process should be stopped manually");
-                            }
-                        });
-                    }
-                });
-
+                }
 
                 $scope.checkSyntax = function () {
                     var fbpCode = editor.getSession().getValue();
@@ -483,21 +494,49 @@
 
                 $scope.saveFile = function(path, body) {
                     if (body && path && isLeaf) {
-                        var repo = path.split("repos/")[1].split("/")[0];
-                        if (repo !== "solettaproject") {
-                            $http.get('api/file/write',
-                                {params: {
-                                          "file_path": path,
-                                          "file_body": body
-                                         }
-                                 });
-                        }
+                        $http.get('api/file/write',
+                                  {params: {
+                                      "file_path": path,
+                                      "file_body": body
+                                      }
+                                  });
                     }
                 };
 
+                $scope.saveFileManually = function() {
+                      if ($scope.shouldSave) {
+                          var file = filePath;
+                          var body = editor.getSession().getValue();
+                          if (file && body) {
+                             $http.get('api/file/write',
+                                  {params: {
+                                      "file_path": file,
+                                      "file_body": body
+                                  }
+                             }).success(function(data) {
+                                $scope.shouldSave = false;
+                                //pop * from the string
+                                $scope.fileName = $scope.fileName.substring(0, $scope.fileName.length-1);
+                             }).error(function(){
+                                alert("Failed to save file on server. Try again.");
+                                $scope.shouldSave = true;
+                             });
+                          } else {
+                             alert("Something went terrbile wrong.\nFailed to save file on server. Try again.");
+                          }
+                      }
+                  };
+
+
+                editor.keyBinding.onTextInput = function(text) {
+                    if ($scope.shouldSave === false && $scope.fileName) {
+                        $scope.fileName = $scope.fileName + "*";
+                        $scope.shouldSave = true;
+                    }
+                    this.origOnTextInput(text);
+                };
+
                 $scope.editorChanged = function (e) {
-                    // Lets put some interfaces like * that will warn user
-                    //the file has changed
                     if (isRunningSyntax === false) {
                         isRunningSyntax = true;
                         $scope.checkSyntaxStart();

@@ -129,6 +129,7 @@
                             <input type="text" ng-model="repoUrl" placeholder="Git repository URL" style="outline: 0; width: 320px; margin-right: -2px;" class="inputControls" />
                             <button type="submit" style="outline: 0; margin-left: -11px;" title="Sync repository git" tabindex="0" id="syncGit" ng-click="syncGit()" ng-disabled="buttonSyncDisabled"/><img src="imgs/button_sync.png"></button>
                             <!--<button type="button" title="Commit" style="outline: 0; margin-left: -11px;" id="commitGit" ng-click="commitDiag()" ng-disabled="buttonSyncDisabled" href="#"><img src="imgs/button_commit.png"></button>-->
+                            <button type="button" ng-class="{'button_save_on': shouldSave == true, 'button_save_off': shouldSave == false}" ng-click="saveFileManually()" title="Save current file"></button>
                             <button type="button" ng-class="{'button_lib_on': libChecked == true, 'button_lib_off': libChecked == false}" ng-click="libChecked = !libChecked" title="Collapse projects panel"></button>
                             <button type="button" ng-class="{'button_code_on': codeChecked == true, 'button_code_off': codeChecked == false}" ng-click="codeChecked = !codeChecked" title="Collapse code panel" ></button>
                             <button type="button" style="margin-right: 5px;" ng-class="{'button_svg_on': svgChecked == true, 'button_svg_off': svgChecked == false}" ng-click="svgChecked = !svgChecked" title="Collapse SVG panel"></button>
