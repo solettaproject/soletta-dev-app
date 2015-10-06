@@ -3,5 +3,5 @@ var http = require('http'),
 
 before(function() {
     server = http.createServer(require('../server/app.js'));
-    browser.baseUrl = 'http://localhost:3000';
+    browser.baseUrl = 'http://localhost:8080';
 });

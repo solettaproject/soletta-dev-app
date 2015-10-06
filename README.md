@@ -111,7 +111,7 @@ If no argument is provided it will get the default server configuration file.
 #### Configuration attributes
 
     server_port:
-         The port listened by the server. Default: 3000
+         The port listened by the server. Default: 8080
 
     server_output:
           Choose if you want the server to show its output.
