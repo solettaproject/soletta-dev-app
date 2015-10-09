@@ -70,7 +70,7 @@
                 $scope.codeChecked = true;
                 $scope.svgChecked = true;
                 $scope.logged = false;
-                $scope.fbpType = false;
+                $scope.fbpType = true;
                 $scope.isServiceRunning = false;
                 var editor = ace.edit("fbp_editor");
                 var aceConfig = require("ace/config");
@@ -86,6 +86,7 @@
 
                 $scope.fbpType = true;
                 aceConfig.set("modePath", "js/ace/");
+                editor.getSession().setMode("ace/mode/fbp");
                 $scope.fileViewer = '# Write FBP Code here.';
                 $scope.buttonSyncDisabled = false;
                 $scope.nodeSelected = function(e, data) {
