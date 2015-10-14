@@ -237,7 +237,7 @@
                                 modal: true,
                                 position: { at: "center top"},
                                 height: 'auto',
-                                width: 650,
+                                width: '75%',
                                 show: { effect: "fade", duration: 300 },
                                 hide: {effect: "fade", duration: 300 },
                                 resizable: 'disable',
