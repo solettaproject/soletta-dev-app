@@ -30,6 +30,7 @@
 module.exports = function () {
     var fs = require('fs');
     var path = require('path');
+    require('./configuration.js')();
 
     this.home_dir = function(user) {
         return __dirname + '/../repos/' + user + '/';
@@ -48,7 +49,12 @@ module.exports = function () {
     };
 
     this.current_user = function (req) {
-        return req.sessionID;
+        var jConf = getConfigurationJson();
+        if (jConf.session_system === true) {
+            return req.sessionID;
+        } else {
+            return "singlesession";
+        }
     };
 
     this.processReq = function(_p, res) {

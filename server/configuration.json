@@ -13,5 +13,6 @@
     "fbp_service_status_refresh_period": 1000,
     "syntax_check_refresh_period": 1100,
     "save_file_period": 5000,
-    "run_dialog_refresh_period": 1000
+    "run_dialog_refresh_period": 1000,
+    "sessions_system": false
 }

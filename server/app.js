@@ -31,8 +31,6 @@
     'use strict';
 
     var express = require('express');
-    var session = require('express-session');
-    var SessionStore = require('session-file-store')(session);
     var path = require('path');
     var logger = require('morgan');
     var cookieParser = require('cookie-parser');
@@ -53,22 +51,28 @@
             jConf = getConfigurationJson(args[0]);
         }
 
-        app.use(session({
-            genid: function(req) {
-                // uuid for guest session ids
-                var id = uuid.v4();
-                console.log("New session: " + id);
-                return id;
-            },
-            name: "dad-session",
-            secret: 'keepitsecret',
-            resave: true,
-            saveUninitialized: true,
-            store: new SessionStore({
-                retries: 500,
-                path: jConf.sessions_dir
-            })
-        }));
+        if (jConf.session_system === true) {
+            var session = require('express-session');
+            var SessionStore = require('session-file-store')(session);
+            app.use(session({
+                genid: function(req) {
+                    // uuid for guest session ids
+                    var id = uuid.v4();
+                        console.log("New session: " + id);
+                    return id;
+                },
+                name: "dad-session",
+                secret: 'keepitsecret',
+                resave: true,
+                saveUninitialized: true,
+                store: new SessionStore({
+                    retries: 500,
+                    minTimeout: 150,
+                    maxTimeout: 200,
+                    path: jConf.sessions_dir
+                })
+            }));
+        }
 
         // view engine setup
         app.set('views', path.join(__dirname, 'views'));
