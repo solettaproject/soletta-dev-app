@@ -176,5 +176,9 @@ If no argument is provided it will get the default server configuration file.
           The refresh period of the syntax checker
           Default: 1100 ms
 
+    sessions_system:
+          Enables system that allows multiple running sessions
+          Default: false
+
 Whenever you make a change in the configuration file the server needs
 to be restarted.
