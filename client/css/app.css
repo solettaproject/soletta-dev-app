@@ -1,18 +1,15 @@
 .tree-browser {
-  /*overflow: auto;*/
   overflow-x: hidden;
-
-  background-color: #2d3237; /*ronaldo: Tree view background*/
+  background-color: #2d3237;
   width: 350px;
 
 
 }
 .file-viewer {
-  /*padding-left: 50px;*/ /*ronaldo*/
   overflow: auto;
   background-color: #2d3237;
-  position:absolute; /*ronaldo*/
-  right: 0px; /*ronaldo*/
+  position:absolute;
+  right: 0px;
   left:350px;
 
 }
@@ -72,7 +69,6 @@ tbody {
   color:white;
 }
 .tabcontents{
-    /*ronaldo*/
     margin-top: 50px;
     background-color: #F0F0F0;
 }
@@ -117,7 +113,6 @@ font-family: clearSans;
     margin-right: 10px;
     padding-left: 10px;
     border-radius: 20px;
-    /*border-bottom: solid 2px #c9c9c9;*/
 }
 button {
     background: transparent;
@@ -135,15 +130,13 @@ button {
 	background: transparent;
 }
 .serviceStatus{
-
-    background-color: #2d3237;
-    box-sizing: border-box;
-    padding-right: 25px;
-    height: 30px;
+    height: 45px;
+    float:right;
     color: #4b535b;
-	display: inline-block;
-	float: right;
+    margin-top: -40px;
+    margin-right: 15px;
 }
+
 .blueLabel{
 	color:#33b7e9;
 	text-transform: capitalize;
@@ -166,14 +159,12 @@ button {
 }
 
 ::-webkit-scrollbar-track {
-    /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); */
     border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
     border-radius: 5px;
     background-color: #33b7e9;
-    /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); */
 }
 ::-webkit-scrollbar-corner{
   background-color: #4f5357;
@@ -184,8 +175,8 @@ iframe{
 /* Overwrite jquery ui class*/
 .ui-button-icon-only {
     width: 2.2em;
-    height: 20px;
-    margin-bottom: 2px;
+    height: 24px;
+    margin-bottom: 3px;
 }
 
 .ui-widget {
@@ -301,26 +292,27 @@ iframe{
     position: relative;
     bottom: -17;
     outline: 0;
+    float: right;
 }
 
 .button_run_off {
     background:url(../imgs/button_run_off.png);
     background-repeat: no-repeat;
-    width:46px;
+    width:40px;
     height:45px;
-    position: relative;
     outline: 0;
-    display: inline;
+    margin-top: -10px;
+    margin-left: 5px;
 }
 
 .button_run_on {
     background:url(../imgs/button_run_on.png);
     background-repeat: no-repeat;
-    width:46px;
+    width:40px;
     height:45px;
-    position: relative;
     outline: 0;
-    display: inline;
+    margin-top: -10px;
+    margin-left: 5px;
 }
 
 .button_stop {
@@ -343,17 +335,6 @@ iframe{
     position: relative;
 }
 
-.running_table {
-    border: 0;
-    bottom: -17px;
-    position: relative;
-    float: left;
-    color: #4b535b;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    margin-right: 18px;
-}
-
 .disable_div {
     display: none;
 }
@@ -364,4 +345,35 @@ iframe{
 
 .ui-dialog {
     z-index: 9999 !important ;
+}
+
+@-moz-document url-prefix() {
+  .button_code_on {
+    bottom: 3;
+  }
+  .button_code_off {
+    bottom: 3;
+  }
+  .button_svg_on{
+    bottom: 3;
+  }
+  .button_svg_off{
+    bottom: 3;
+  }
+  .button_lib_on{
+    bottom:3;
+  }
+  .button_lib_off{
+    bottom:3;
+  }
+
+  .serviceStatus{
+      margin-top: -60px;
+  }
+  .button_save_on{
+    bottom:3;
+  }
+  .button_save_off{
+    bottom:3;
+  }
 }
