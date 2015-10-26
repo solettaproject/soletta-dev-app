@@ -281,6 +281,7 @@
                         });
                     } else if ($scope.fbpType === true && $scope.buttonSyncDisabled === false) {
                         var fbpCode = editor.getSession().getValue();
+                        var fbpName = $scope.fileName;
                         $scope.newFile = true;
                         var conf = $scope.selectConfigPath;
                         if (conf === "none") {
@@ -288,6 +289,7 @@
                         }
                         $http.post('/api/fbp/run',
                                 {params: {
+                                    "fbp_name": fbpName,
                                     "code": fbpCode,
                                     "conf": conf
                                 }

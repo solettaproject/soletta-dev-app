@@ -38,6 +38,7 @@
     require('./configuration.js')();
 
     var jConf = getConfigurationJson();
+    var runningFBPName;
 
     /* GET home page. */
     router.get('/', function(req, res) {
@@ -90,6 +91,9 @@
             });
             child.on('close', function(code) {
                 stdout = stdout.replace(/Active:/, '').trim();
+                if (runningFBPName) {
+                    stdout = runningFBPName + " - " + stdout;
+                }
                 res.send(stdout);
             });
         } else {
@@ -199,6 +203,7 @@
     router.post('/api/fbp/run', function(req, res) {
         if (jConf.run_fbp_access === true) {
             var exec = require('child_process').exec;
+            var name = req.body.params.fbp_name;
             var code = req.body.params.code;
             var conf = req.body.params.conf;
             if (!code) {
@@ -228,6 +233,9 @@
                         });
                         child.on('close', function(code) {
                             console.log('closing code: ' + code);
+                            if (name) {
+                                runningFBPName = name;
+                            }
                             res.sendStatus(code);
                         });
                     });
