@@ -723,6 +723,7 @@
                                 } else {
                                     $scope.isServiceRunning = false;
                                 }
+                                $scope.ServiceStatus = $scope.ServiceStatus.replace(/since.*;/,"");
                             }).error(function(){
                                 $scope.ServiceStatus = "Failed to get service information";
                             });
