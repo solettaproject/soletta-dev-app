@@ -318,11 +318,11 @@ iframe{
 .button_stop {
     background:url(../imgs/button_stop.png);
     background-repeat: no-repeat;
-    width:46px;
+    width:40px;
     height:45px;
-    position: relative;
     outline: 0;
-    display: inline;
+    margin-top: -10px;
+    margin-left: 5px;
 }
 
 .spin_sync {
