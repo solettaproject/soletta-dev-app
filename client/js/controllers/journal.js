@@ -32,7 +32,9 @@
     app.controller ('SystemdJournald', ['$scope', '$http', '$interval', '$location', 'svConf',
         function ($scope, $http, $interval, $location, svConf) {
 
+           var promiseJournal;
            $scope.journalRefreshPeriod = 3000;
+
            svConf.fetchConf().success(function(data){
                 var journal = data.journal_access;
                 $scope.journalRefreshPeriod= parseInt(data.journal_refresh_period);
@@ -44,24 +46,26 @@
             });
 
             $scope.run = function() {
+                $scope.stopJournal();
                 $http.get('/api/journald').success(function(data) {
                     $scope.JournaldViewer = data;
+                    $scope.startJournal();
                 }).error(function(){
+                    $scope.startJournal();
                     $scope.JournaldViewer = "Erro getting systemd journald";
                 });
             };
 
             $scope.startJournal = function() {
-                $http.get('/api/journald').success(function(data) {
-                    $scope.JournaldViewer = data;
-                }).error(function(){
-                    $scope.JournaldViewer = "Erro getting systemd journald";
-                });
-
-                $interval(function () {
+                promiseJournal = $interval(function () {
                     $scope.run();
                 }, $scope.journalRefreshPeriod);
             };
+
+            $scope.stopJournal = function() {
+                $interval.cancel(promiseJournal);
+            };
+
         }]);
 }());
 
