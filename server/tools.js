@@ -102,40 +102,35 @@ module.exports = function () {
     this.parseJournaldToJSON = function(user, output) {
         var i = 0;
         var k = 5; // message starts on 5
-        var journald = "[";
-        var found = false;
-        var json_block = "";
+        var journald = [];
+        var line_block = "";
+        var json_block;
         while (i < output.length) {
             var j = output.indexOf("\n", i);
             if (j == -1) {
                 j = output.length;
             }
             var line = output.substr(i, j-i).trim();
-            json_block += line;
             i = j + 1;
 
-            if (/\[.*[^a-zA-Z]+[0-9][0-9]+.*\]/.test(line) === true) {
-                found = true;
-            }
+            line_block = line_block + line;
 
-            if (line.indexOf("}") > -1) {
-                if (found === false) {
-                    journald += json_block + ",";
-                }
-                json_block = "";
-                found = false;
+            if (line === "}") {
+                    try {
+                        if (line_block.indexOf("-- Reboot --") > -1) {
+                            line_block = line_block.replace("-- Reboot --","");
+                        }
+                        json_block = JSON.parse(line_block);
+                        journald.push(json_block);
+                    } catch (err) {
+                        console.log(err);
+                        console.log(line_block);
+                        console.log("Proceeding anyway");
+                    }
+                line_block = "";
             }
         }
-        journald = journald.substring(0, journald.length - 1);
-        journald += "]";
-        try {
-            var json = JSON.parse(journald);
-            return json;
-        } catch(err) {
-            console.log("Error to parse journal json");
-            console.log(err);
-            return err;
-        }
+        return journald;
     };
 
     this.getConfigureFile = function(user, conf_path, callback) {
