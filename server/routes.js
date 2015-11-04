@@ -139,7 +139,7 @@
             var child;
             if (!unit_name) {
                 child = spawn('journalctl',
-                                  ['-o', 'json-pretty', '--since=15 min ago', '--no-pager']);
+                                  ['-o', 'json-pretty', '-n', '100', '--no-pager']);
 
                 child.on('error', function(err) {
                     error = true;

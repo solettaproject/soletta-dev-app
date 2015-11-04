@@ -31,4 +31,4 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SYSTEMD_UNIT="fbp-runner@$(systemd-escape $1).service"
-journalctl -o json-pretty --since="15 min ago" --no-pager -u "$SYSTEMD_UNIT"
+journalctl -o json-pretty -n 100 --no-pager -u "$SYSTEMD_UNIT"
