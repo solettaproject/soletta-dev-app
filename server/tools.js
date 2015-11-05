@@ -121,7 +121,9 @@ module.exports = function () {
                             line_block = line_block.replace("-- Reboot --","");
                         }
                         json_block = JSON.parse(line_block);
-                        journald.push(json_block);
+                        if(json_block.SYSLOG_IDENTIFIER !== "node") {
+                            journald.push(json_block);
+                        }
                     } catch (err) {
                         console.log(err);
                         console.log(line_block);
