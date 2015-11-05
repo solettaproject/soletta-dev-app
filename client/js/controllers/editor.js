@@ -36,6 +36,7 @@
                   FetchFileFactory, usSpinnerService, svConf) {
                 var isRunningSyntax = false;
                 var promiseCheckSyntax;
+                var promiseServiceStatus;
                 var promiseRunViewer;
                 var markId;
                 var diag;
@@ -55,12 +56,9 @@
                     $scope.runJournal = data.journal_access;
                     $scope.runDialogRefreshPeriod = parseInt(data.run_dialog_refresh_period);
                     $scope.syntaxCheckRefreshPeriod = parseInt(data.syntax_check_refresh_period);
-                    var refreshPeriod = parseInt(data.fbp_service_status_refresh_period);
+                    $scope.refreshPeriod = parseInt(data.fbp_service_status_refresh_period);
                     if ($scope.runJournal === true) {
-                        $scope.getServiceStatus();
-                        $interval(function () {
-                          $scope.getServiceStatus();
-                        }, refreshPeriod);
+                        $scope.startServiceStatus();
                     }
                 });
                 $scope.libChecked = false;
@@ -711,12 +709,20 @@
 
                 };
 
+                $scope.startServiceStatus = function () {
+                    promiseServiceStatus = $interval(function () {
+                        $interval.cancel(promiseServiceStatus);
+                        $scope.getServiceStatus();
+                    }, $scope.refreshPeriod);
+                };
+
                 $scope.getServiceStatus = function () {
                     $http.get('/api/service/status',
                             {params: {
                                          "service": "fbp-runner.service"
                                      }
                             }).success(function(data) {
+                                $scope.startServiceStatus();
                                 $scope.ServiceStatus = data.trim();
                                 if ($scope.ServiceStatus.indexOf("active (running)") > -1) {
                                     $scope.isServiceRunning = true;
@@ -725,6 +731,7 @@
                                 }
                                 $scope.ServiceStatus = $scope.ServiceStatus.replace(/since.*;/,"");
                             }).error(function(){
+                                $scope.startServiceStatus();
                                 $scope.ServiceStatus = "Failed to get service information";
                             });
                 };
