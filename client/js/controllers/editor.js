@@ -412,17 +412,21 @@
                 };
 
                 window.onbeforeunload = onBeforeUnload_Handler;
-                function onBeforeUnload_Handler(){
-                    $http.post('/api/fbp/stop').success(function(data) {
-                        if (data == 1) {
-                            alert("FBP Service failed to stop. Process should be stopped manually");
-                        }
-                    });
+                function onBeforeUnload_Handler() {
+                    if ($scope.isServiceRunning) {
+                        $http.post('/api/fbp/stop').success(function(data) {
+                            if (data == 1) {
+                                alert("FBP Service failed to stop. Process should be stopped manually");
+                            }
+                        });
+                    }
+
                     if ($scope.shouldSave === true) {
                         return "The file was changed and the data was not saved.";
                     } else {
                         return undefined;
                     }
+
                 }
 
                 $scope.checkSyntax = function () {
