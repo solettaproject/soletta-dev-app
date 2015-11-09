@@ -61,7 +61,7 @@
                         $scope.startServiceStatus();
                     }
                 });
-                $scope.libChecked = false;
+                $scope.libChecked = true;
                 $scope.codeChecked = true;
                 $scope.svgChecked = true;
                 $scope.logged = false;
