@@ -90,8 +90,8 @@
                     dataTree = data;
                     var repos = _l.id.split("repos")[1];
                     var rfinal = repos.split("/");
-                    $scope.owner = rfinal[1];
-                    $scope.repo = rfinal[2];
+                    $scope.subFolder = rfinal[1];
+                    $scope.folder = rfinal[2];
                     $scope.getConfigurationlist(_l.id);
                     isLeaf = _l.isLeaf;
                     aceConfig.set("modePath", "libs/ace-builds/src-min/");
@@ -116,12 +116,8 @@
                                 $scope.fbpType = false;
                             }
 
-                            if ($scope.owner === "solettaproject") {
-                                editor.setHighlightActiveLine(true);
-                            } else {
-                                editor.setHighlightActiveLine(false);
-                                editor.setReadOnly(false);
-                            }
+                            editor.setHighlightActiveLine(false);
+                            editor.setReadOnly(false);
                         });
                         $scope.root = false;
                     } else {
@@ -179,7 +175,7 @@
                 };
 
                 $scope.getConfigurationlist = function (repo_id) {
-                    if ($scope.owner && $scope.repo) {
+                    if ($scope.folder && $scope.subFolder) {
                         var id = "/";
                         var start_count = false;
                         var count = 0;
@@ -532,7 +528,8 @@
                   };
 
                 editor.keyBinding.onCommandKey = function(e, hashId, keyCode) {
-                    if ($scope.shouldSave === false && $scope.fileName) {
+                    if ($scope.shouldSave === false && $scope.fileName &&
+                        $scope.folder !== "demo") {
                         $scope.fileName = $scope.fileName + "*";
                         $scope.shouldSave = true;
                     }
