@@ -78,7 +78,7 @@
                 editor.session.setOption("useWorker", false);
                 editor.setFontSize(15);
                 editor.setTheme('ace/theme/monokai');
-                editor.keyBinding.origOnTextInput = editor.keyBinding.onTextInput;
+                editor.keyBinding.origOnCommandKey = editor.keyBinding.onCommandKey;
 
                 $scope.fbpType = true;
                 aceConfig.set("modePath", "js/ace/");
@@ -531,13 +531,12 @@
                       }
                   };
 
-
-                editor.keyBinding.onTextInput = function(text) {
+                editor.keyBinding.onCommandKey = function(e, hashId, keyCode) {
                     if ($scope.shouldSave === false && $scope.fileName) {
                         $scope.fileName = $scope.fileName + "*";
                         $scope.shouldSave = true;
                     }
-                    this.origOnTextInput(text);
+                    this.origOnCommandKey(e, hashId, keyCode);
                 };
 
                 $scope.editorChanged = function (e) {
