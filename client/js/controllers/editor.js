@@ -68,6 +68,7 @@
                 $scope.fbpType = true;
                 $scope.isServiceRunning = false;
                 var editor = ace.edit("fbp_editor");
+                var Range = require('ace/range').Range;
                 var aceConfig = require("ace/config");
                 var modelist = ace.require("ace/ext/modelist");
                 editor.setOptions({
@@ -112,6 +113,7 @@
                                 $scope.fbpType = true;
                                 aceConfig.set("modePath", "js/ace/");
                                 editor.getSession().setMode("ace/mode/fbp");
+                                foldHeaderCommentaries();
                             } else {
                                 $scope.fbpType = false;
                             }
@@ -142,6 +144,31 @@
                         $scope.fbpType = false;
                     }
                 };
+
+                //Function that will folder header of a ace contents
+                function foldHeaderCommentaries() {
+                    var lines = editor.session.getLines(0, editor.session.getLength());
+                    var count = 0;
+                    var l;
+                    var ahead;
+                    for (var i = 0; i < editor.session.getLength(); i++) {
+                        l = editor.session.getLine(i);
+                        if (l.charAt(0) !== "#") {
+                            ahead = editor.session.getLine(i + 1);
+                            if (ahead.charAt(0) !== "#") {
+                                break;
+                            } else {
+                                count++;
+                            }
+                        } else {
+                            count++;
+                        }
+                    }
+                    var len = editor.session.getLine(count);
+                    editor.session.selection.addRange(new Range(0, 0, count, 256));
+                    editor.session.toggleFold(false);
+                    editor.session.selection.clearSelection();
+                }
 
                 function jsTreeTraverse(state, nodes) {
                     var inst = $('#jstree').jstree(true);
