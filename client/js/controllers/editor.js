@@ -154,12 +154,7 @@
                     for (var i = 0; i < editor.session.getLength(); i++) {
                         l = editor.session.getLine(i);
                         if (l.charAt(0) !== "#") {
-                            ahead = editor.session.getLine(i + 1);
-                            if (ahead.charAt(0) !== "#") {
-                                break;
-                            } else {
-                                count++;
-                            }
+                            break;
                         } else {
                             count++;
                         }
