@@ -164,8 +164,9 @@
                             count++;
                         }
                     }
-                    var len = editor.session.getLine(count);
-                    editor.session.selection.addRange(new Range(0, 0, count, 256));
+                    var len = editor.session.getLine(count).length;
+                    console.log(len);
+                    editor.session.selection.addRange(new Range(0, 0, count, len));
                     editor.session.toggleFold(false);
                     editor.session.selection.clearSelection();
                 }
