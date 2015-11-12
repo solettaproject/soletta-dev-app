@@ -101,7 +101,6 @@ module.exports = function () {
 
     this.parseJournaldToJSON = function(user, output) {
         var i = 0;
-        var k = 5; // message starts on 5
         var journald = [];
         var line_block = "";
         var json_block;
