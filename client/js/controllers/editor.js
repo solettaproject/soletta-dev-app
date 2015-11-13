@@ -114,7 +114,9 @@
                                 aceConfig.set("modePath", "js/ace/");
                                 editor.getSession().setMode("ace/mode/fbp");
                                 foldHeaderCommentaries();
+                                showSchema();
                             } else {
+                                $scope.schemaOn = false;
                                 $scope.fbpType = false;
                             }
 
@@ -166,6 +168,29 @@
                     editor.session.selection.clearSelection();
                 }
 
+                function showSchema() {
+                    if ($scope.folder === "demo") {
+                        var name = $scope.fileName.split(".fbp")[0].split(" ")[1];
+                        var schema_name = "schema-" + name + ".jpg";
+                        $scope.schema = "imgs/schema/" + schema_name;
+                        hasImage($scope.schema,
+                            function () {
+                                // This function will run when the image is found
+                                $scope.schemaOn = true;
+                            }, function () {
+                                // This function will run when the image is not found
+                                $scope.schemaOn = false;
+                            });
+                    }
+                }
+
+                function hasImage(src, loaded, failed) {
+                     var img = new Image();
+                     img.onerror = failed;
+                     img.onload = loaded;
+                     img.src = src;
+                 }
+
                 function jsTreeTraverse(state, nodes) {
                     var inst = $('#jstree').jstree(true);
                     var node = inst.get_node(state);
@@ -179,6 +204,31 @@
                         });
                     }
                 }
+
+                $scope.showSchema = function () {
+                    diag = $('<div></div>').
+                          html($compile('<img style="width:100%;height:100%;" ng-src="{{schema}}"></img>')($scope)).
+                          dialog({
+                              title: "Schema",
+                              autoOpen: false,
+                              modal: true,
+                              position: { at: "center top"},
+                              height: 600,
+                              width: '75%',
+                              show: { effect: "fade", duration: 300 },
+                              hide: {effect: "fade", duration: 300 },
+                              resize: 'disable',
+                              buttons: {
+                                Close: function() {
+                                    $(this).dialog("close");
+                                }
+                              },
+                              close: function(ev, ui){
+                                  $(this).dialog("close");
+                              }
+                          });
+                      diag.dialog("open");
+                };
 
                 $scope.setEditorContent = function (content, previousContent, savePath) {
                     if ($scope.shouldSave === false || !previousContent) {

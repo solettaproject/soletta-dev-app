@@ -123,6 +123,7 @@
                     <!--CODE FLOW CONTROLS ON THE TOP !-->
                     <form ng-submit="syncGit()">
                         <div class="headerControls" style="margin-right: -7px;">
+                            <button ng-if="schemaOn == true" ng-click="showSchema()" class="button_schema_on" type="button">Schema</button>
                             <div ng-submit="syncGit()" class="spin_sync"  us-spinner="{radius:8.5, width:3, length: 4}" spinner-key="spinner-1"></div>
                             <input type="text" ng-model="repoUrl" placeholder="Git repository URL" style="outline: 0; width: 320px; margin-right: -2px;" class="inputControls" />
                             <button type="submit" style="outline: 0;" title="Sync repository git" tabindex="0" id="syncGit" ng-click="syncGit()" ng-disabled="buttonSyncDisabled"/><img src="imgs/button_sync.png"></button>
