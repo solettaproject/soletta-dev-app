@@ -805,7 +805,7 @@
                     }
                 };
 
-            $scope.processLoginClass = function () {
+                $scope.processLoginClass = function () {
                     if (!$scope.loginConf) {
                         return "disable_div";
                     } else {
