@@ -184,6 +184,24 @@ iframe{
     font-size: 14px !important;
 }
 
+.button_schema_on {
+    background-color: white;
+    background-repeat: no-repeat;
+    width:61px;
+    height:45px;
+    border: 0;
+    position: relative;
+    bottom: 0;
+    outline: 0;
+}
+
+.button_schema_off {
+    display: none;
+    outline: 0;
+    background:transparent;
+    border:0;
+}
+
 .button_code_on {
     background:url(../imgs/code_on.png);
     background-repeat: no-repeat;
