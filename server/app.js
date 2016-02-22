@@ -100,6 +100,13 @@
             }
         });
 
+        server.once('error', function(err) {
+            if (err.code === 'EADDRINUSE') {
+                console.log('Error: Could not run the Soletta Dev-App server.' +
+                            '\nPort ' + jConf.server_port + ' is already in use');
+            }
+        });
+
         module.exports = app;
     } catch (err) {
       console.log(err);
