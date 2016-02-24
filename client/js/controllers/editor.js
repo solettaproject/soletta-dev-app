@@ -30,7 +30,7 @@
 
 (function() {
     'use strict';
-    app.controller ('RunFBPCode', ['$compile', '$scope', '$http', '$interval',
+    app.controller ('editor', ['$compile', '$scope', '$http', '$interval',
         '$document', 'broadcastService', 'FetchFileFactory',
         'usSpinnerService', 'svConf',
         function ($compile, $scope, $http, $interval, $document, broadcastService,
