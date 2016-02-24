@@ -27,6 +27,7 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 (function() {
     'use strict';
     app.controller ('RunFBPCode', ['$compile', '$scope', '$http', '$interval',
@@ -39,12 +40,9 @@
                 var promiseServiceStatus;
                 var promiseRunViewer;
                 var markId;
-                var diag;
+                var schemaDiag;
                 var filePath;
-                var currentFile;
                 var isLeaf;
-                var rootTree;
-                var dataTree;
                 $scope.syntaxCheckRefreshPeriod = 1100;
                 $scope.runConf = false;
                 $scope.loginConf = false;
@@ -88,7 +86,6 @@
                 $scope.buttonSyncDisabled = false;
                 $scope.nodeSelected = function(e, data) {
                     var _l = data.node.li_attr;
-                    dataTree = data;
                     var repos = _l.id.split("repos")[1];
                     var rfinal = repos.split("/");
                     $scope.subFolder = rfinal[1];
@@ -162,7 +159,6 @@
                         }
                     }
                     var len = editor.session.getLine(count).length;
-                    console.log(len);
                     editor.session.selection.addRange(new Range(0, 0, count, len));
                     editor.session.toggleFold(false);
                     editor.session.selection.clearSelection();
@@ -206,7 +202,7 @@
                 }
 
                 $scope.showSchema = function () {
-                    diag = $('<div></div>').
+                    schemaDiag = $('<div></div>').
                           html($compile('<img style="width:100%;height:100%;" ng-src="{{schema}}"></img>')($scope)).
                           dialog({
                               title: "Schema",
@@ -227,7 +223,7 @@
                                   $(this).dialog("close");
                               }
                           });
-                      diag.dialog("open");
+                      schemaDiag.dialog("open");
                 };
 
                 $scope.setEditorContent = function (content, previousContent, savePath) {
@@ -379,106 +375,6 @@
                 $scope.$on('filePath', function () {
                     filePath = broadcastService.message;
                 });
-
-                $scope.applyCommit = function() {
-                    var fbpCode = editor.getSession().getValue();
-                    if (!fbpCode) {
-                        alert("Failed to get FBP Code");
-                    } else if (!$scope.username) {
-                        alert("Must contain git username");
-                    } else if (!$scope.password) {
-                        alert("Must contain git password");
-                    } else if (!$scope.repo) {
-                        alert("Must contain target repository");
-                    } else if (!$scope.branch) {
-                        alert("Must contain branch name");
-                    } else if (!$scope.owner) {
-                        alert("Must contain repository owner");
-                    } else if (!$scope.commitMsg) {
-                        alert("Must contain a commit message");
-                    } else if ($scope.owner === "solettaproject") {
-                        alert("You can't commit on any repository that the owner is solettaproject");
-                    } else {
-                        var cachedPath = filePath.split($scope.repo + "/")[1];
-                        if (!cachedPath) {
-                            alert("Failed to parse file path");
-                        } else {
-                            var loading = $('<div></div>').
-                                html($compile('<div us-spinner></div>')($scope)).
-                                dialog({
-                                    autoOpen: false,
-                                    modal: true,
-                                    dialogClass: 'no-close',
-                                    position: { at: "center top"},
-                                    height: 60,
-                                    width: 50,
-                                    show: { effect: "fade", duration: 300 },
-                                    hide: {effect: "fade", duration: 300 },
-                                    resizable: 'disable',
-                                    buttons: {}
-                                });
-                            $('.no-close').find('.ui-dialog-titlebar').css('display','none');
-                            $('.no-close').css('background','transparent');
-                            $('.no-close').css('border','none');
-                            loading.dialog("open");
-                            $http.post('/api/git/repo/commit',{params: {
-                                "user": $scope.username,
-                                "password": $scope.password,
-                                "repo":  $scope.repo,
-                                "repo_owner": $scope.owner,
-                                "new_file": false,
-                                "branch": $scope.branch,
-                                "content": fbpCode,
-                                "commit_message": $scope.commitMsg,
-                                "file_path": cachedPath}
-                            }).success(function(data) {
-                                alert("Commited!");
-                                loading.dialog("close");
-                                diag.dialog("close");
-                            }).error(function(data){
-                                alert("Error: " +  data);
-                                loading.dialog("close");
-                            });
-                        }
-
-                    }
-                };
-
-                $scope.commitDiag = function() {
-                    diag = $('<div style="background-color:#2d3237"></div>').
-                        html($compile('<div>Username:&nbsp;&nbsp;<input class="inputControls" style="width: 194px;" type="text" ng-model="username"/>' +
-                                    '&nbsp;&nbsp;Password:&nbsp;<input class="inputControls" style="width: 190px;" type="password"'+
-                                    'ng-model="password"/></div><br>' +
-                                    'Repository:&nbsp;<input class="inputControls" style="width: 195px;" type="text" ng-model="repo"/>' +
-                                    '&nbsp;&nbsp;Branch:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="inputControls" style="width: 190px;" type="text"'+
-                                    'ng-model="branch"/></div><br>' +
-                                    '<br><div>Repository Owner:&nbsp;<input class="inputControls" type="text" style="width: 70%;"' +
-                                    'ng-model="owner"/></div><br>' +
-                                    '<div><div style="vertical-align:middle">Commit Message&nbsp;&nbsp;&nbsp;</div>' +
-                                    '<div><textarea class="inputControls" style="height: 100px;" ng-model="commitMsg" rows="8" cols="59"/>' +
-                                    '</div></div>')($scope)).
-                        dialog({
-                            title: "Git Commit",
-                            autoOpen: false,
-                            modal: true,
-                            position: { at: "center top"},
-                            height: 443,
-                            width: 650,
-                            show: { effect: "fade", duration: 300 },
-                            hide: {effect: "fade", duration: 300 },
-                            resize: 'disable',
-                            buttons: {
-                                "Submit":  $scope.applyCommit,
-                        Cancel: function() {
-                            $(this).dialog("close");
-                        }
-                            },
-                            close: function(ev, ui){
-                                $(this).dialog("close");
-                            }
-                        });
-                    diag.dialog("open");
-                };
 
                 window.onbeforeunload = onBeforeUnload_Handler;
                 function onBeforeUnload_Handler() {
