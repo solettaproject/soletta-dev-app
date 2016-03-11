@@ -1,0 +1,11 @@
+#!/usr/bin/env sol-fbp-runner
+# This example controls a servo and sets its angle, adjusting every 3
+# seconds. The node type is resolved using the
+# sol-flow-intel-edison-rev-c.json. If running in a different board,
+# please adjust to your needs
+
+inc(int/accumulator:setup_value=min:0|max:170|step:10)
+
+timer(timer:interval=2000) OUT -> INC inc OUT -> IN converter(converter/int-to-float)
+converter OUT -> ANGLE servo(Servo)
+converter OUT -> IN _(console)

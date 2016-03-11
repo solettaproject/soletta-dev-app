@@ -1,0 +1,14 @@
+#!/usr/bin/env sol-fbp-runner
+# This example enables a PWM called 'led1' and sets the duty cycle of
+# another called 'led2'. These node types are resolved using the
+# sol-flow-intel-edison-rev-c.json. If running in a different board,
+# please adjust to your needs
+
+t1(timer:interval=1000)
+t2(timer:interval=250)
+toggle(boolean/toggle)
+acc(int/accumulator:setup_value=min:0|max:2032605|step:7971)
+
+t1 OUT -> IN toggle OUT -> ENABLED led1(Led1)
+toggle OUT -> IN c1(console:prefix="Led1 ")
+t2 OUT -> INC acc OUT -> DUTY_CYCLE led2(Led2)
