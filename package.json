@@ -31,7 +31,7 @@
     "internet_of_things"
   ],
   "author": "",
-  "license": "BSD-3-Clause",
+  "license": "Apache-2.0",
   "devDependencies": {
     "protractor": "~2.1.0",
     "expect.js": "~0.3.1",
