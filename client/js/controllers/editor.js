@@ -96,7 +96,6 @@
                                 $scope.fbpType = true;
                                 aceConfig.set("modePath", "js/ace/");
                                 editor.getSession().setMode("ace/mode/fbp");
-                                foldHeaderCommentaries();
                                 showSchema();
                             } else {
                                 $scope.schemaOn = false;
@@ -129,26 +128,6 @@
                         $scope.fbpType = false;
                     }
                 };
-
-                //Function that will folder header of a ace contents
-                function foldHeaderCommentaries() {
-                    var lines = editor.session.getLines(0, editor.session.getLength());
-                    var count = 0;
-                    var l;
-                    var ahead;
-                    for (var i = 0; i < editor.session.getLength(); i++) {
-                        l = editor.session.getLine(i);
-                        if (l.charAt(0) !== "#") {
-                            break;
-                        } else {
-                            count++;
-                        }
-                    }
-                    var len = editor.session.getLine(count).length;
-                    editor.session.selection.addRange(new Range(0, 0, count, len));
-                    editor.session.toggleFold(false);
-                    editor.session.selection.clearSelection();
-                }
 
                 function showSchema() {
                     if ($scope.folder === "demo") {
