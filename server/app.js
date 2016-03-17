@@ -79,7 +79,11 @@
 
         app.use('/', routes);
 
-        app.set('port', process.env.PORT || jConf.server_port);
+        if (server.indexOf("protractor")) {
+            app.set('port', process.env.PORT || 8080);
+        } else {
+            app.set('port', process.env.PORT || jConf.server_port);
+        }
 
         var server = app.listen(app.get('port'), function() {
             if (jConf.server_output) {

@@ -1,5 +1,5 @@
 {
-    "server_port": 8080,
+    "server_port": 80,
     "server_output": true,
     "server_user_home_dir": "/tmp",
     "sessions_dir" : "./sessions",
