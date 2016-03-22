@@ -328,6 +328,7 @@ oop.inherits(FoldMode, BaseFoldMode);
 
 }).call(FoldMode.prototype);
 
+
 });
 
 define("ace/mode/behaviour/cstyle",["require","exports","module","ace/lib/oop","ace/mode/behaviour","ace/token_iterator","ace/lib/lang"], function(require, exports, module) {
@@ -766,6 +767,45 @@ oop.inherits(Mode, TextMode);
 
     this.$id = "ace/mode/fbp";
 }).call(Mode.prototype);
+// adding some clear formatting
+var fbpcompletion=function(){
+
+};
+(function(){
+    this.getPropertyCompletions = function(state, session, pos, prefix) {
+        var properties = Object.keys(propertyMap);
+        return properties.map(function(property){
+            return {
+                caption: property,
+                snippet: property + ': $0',
+                meta: "property",
+                score: Number.MAX_VALUE
+            };
+        });
+    };
+
+this.getPropertyValueCompletions = function(state, session, pos, prefix) {
+        var line = session.getLine(pos.row).substr(0, pos.column);
+        var property = (/([\w\-]+):[^:]*$/.exec(line) || {})[1];
+
+        if (!property)
+            return [];
+        var values = [];
+        if (property in propertyMap && typeof propertyMap[property] === "object") {
+            values = Object.keys(propertyMap[property]);
+        }
+        return values.map(function(value){
+            return {
+                caption: value,
+                snippet: value,
+                meta: "property value",
+                score: Number.MAX_VALUE
+            };
+        });
+    };
+
+}).call(fbpcompletion.prototype);
+
 
 exports.Mode = Mode;
 });

@@ -130,6 +130,7 @@ var functions = {
             var nodes = json[key];
             for (var j in nodes) {
                 nodeTypesName.push(nodes[j].name);
+                console.log(nodes[j].name);
             }
         }
         return nodeTypesName;
