@@ -54,15 +54,14 @@ var ShHighlightRules = function() {
     var pointFloat = "(?:(?:" + intPart + "?" + fraction + ")|(?:" + intPart + "\\.))";
     var exponentFloat = "(?:(?:" + pointFloat + "|" +  intPart + ")" + ")";
     var floatNumber = "(?:" + exponentFloat + "|" + pointFloat + ")";
-    var fileDescriptor = "(?:&" + intPart + ")";
-    var fileDescriptor = "[a-zA-Z0-9_-]+\\/[a-zA-Z0-9_-]+";
+    var nodeTypes = "[(]([^:)]+)[:)]|\\)";
 
-    var variableName = "[a-zA-Z_][a-zA-Z0-9_]*";
-    var variable = "(?:(?:\\$" + variableName + ")|(?:" + variableName + "=))";
+    var nodeOptions = "[a-zA-Z_][a-zA-Z0-9_]*";
+    var variable = "(?:(?:\\$" + nodeOptions + ")|(?:" + nodeOptions + "=))";
 
     var builtinVariable = "(?:\\$(?:SHLVL|\\$|\\!|\\?))";
 
-    var func = "[A-Z0-9]+";
+    var ports = " [a-zA-Z_][a-zA-Z0-9_]*(|\\[[0-9]+\\]) ";
 
     this.$rules = {
         "start" : [{
@@ -153,11 +152,11 @@ var ShHighlightRules = function() {
             token : "variable",
             regex : variable
         }, {
-            token : "support.function",
-            regex : func
+            token : "variable.parameter",
+            regex : ports
         }, {
             token : "support.function",
-            regex : fileDescriptor
+            regex : nodeTypes
         }, {
             token : "string",           // ' string
             start : "'", end : "'"
