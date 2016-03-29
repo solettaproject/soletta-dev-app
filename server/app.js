@@ -40,6 +40,8 @@
 
     var routes = require('./routes.js');
     require('./configuration.js')();
+// Testing for nodetypes output
+    // var nodearray = require('./nodetypes/nodetypes.js')
 
     try {
         var app = express();
@@ -75,6 +77,8 @@
             }));
         }
 
+       
+
         // view engine setup
         app.set('views', path.join(__dirname, 'views'));
         app.engine('html', require('ejs').renderFile);
@@ -95,11 +99,15 @@
 
         app.set('port', process.env.PORT || jConf.server_port);
 
+         // Initial lookup
+        // console.log(nodearray.getNodeTypesName());
+
         var server = app.listen(app.get('port'), function() {
             if (jConf.server_output) {
                 console.log('Express server listening on port ' + server.address().port);
             }
         });
+
 
         server.once('error', function(err) {
             if (err.code === 'EADDRINUSE') {
