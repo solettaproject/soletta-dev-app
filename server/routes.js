@@ -60,29 +60,31 @@
     /* Journald Service Status */
     router.get('/api/service/status', function(req, res) {
         if (jConf.journal_access === true) {
-            var service = req.query.service;
-            if (!service) {
-                res.send("Failed to run command on server");
-            }
             var exec = require('child_process').exec;
             var stdout = "";
-            var child = exec(scripts_dir() + 'systemctl-unit.sh ' + service + ' ' + tmp_dir(current_user(req)));
-            if (!child) {
-                res.send("Failed to run command on server");
-            }
-            child.stdout.on('data', function(data) {
-                stdout += data;
-            });
-            child.stderr.on('data', function(data) {
-                stdout = "Failed to run command on server";
-            });
-            child.on('close', function(code) {
-                stdout = stdout.replace(/Active:/, '').trim();
-                if (runningFBPName) {
-                    stdout = runningFBPName + " - " + stdout;
+            var fbp_path = req.query.fbp_path;
+            if (fbp_path) {
+                var child = exec(scripts_dir() + 'systemctl-unit.sh fbp-runner ' + fbp_path);
+                if (!child) {
+                    res.send("Failed to run command on server");
                 }
-                res.send(stdout);
-            });
+                child.stdout.on('data', function(data) {
+                    stdout += data;
+                });
+                child.stderr.on('data', function(data) {
+                    console.log("Err: " + data);
+                    stdout = "Failed to run command on server";
+                });
+                child.on('close', function(code) {
+                    stdout = stdout.replace(/Active:/, '').trim();
+                    if (runningFBPName) {
+                        stdout = runningFBPName + " - " + stdout;
+                    }
+                    res.send(stdout);
+                });
+            } else {
+                res.send("There is no running FBP.")
+            }
         } else {
             res.status(404).send("Unsupported api");
         }
@@ -122,9 +124,9 @@
             var spawn = require('child_process').spawn;
             var stdout = "";
             var error = false;
-            var unit_name = req.query.unit_name;
+            var unit_path = req.query.unit_path;
             var child;
-            if (!unit_name) {
+            if (!unit_path) {
                 child = spawn('journalctl',
                                   ['-o', 'json-pretty', '-n', '100', '--no-pager']);
 
@@ -148,7 +150,7 @@
             } else {
                 var script = scripts_dir() + "/journalctl-unit.sh";
                 child = spawn(script,
-                              [tmp_dir(current_user(req))]);
+                              [unit_path]);
                 child.on('error', function(err) {
                     error = true;
                 });
@@ -190,43 +192,36 @@
     router.post('/api/fbp/run', function(req, res) {
         if (jConf.run_fbp_access === true) {
             var exec = require('child_process').exec;
-            var name = req.body.params.fbp_name;
+            var fbp_path = req.body.params.fbp_path;
             var code = req.body.params.code;
             var conf = req.body.params.conf;
-            if (!code) {
+            if (!fbp_path || !code) {
                 res.sendStatus(1);
             } else {
                 var child;
                 var stdout = "";
-                var err = writeFile(tmp_dir(current_user(req)) + "fbp_runner.fbp", code);
-                if (err) {
-                    console.log('Write File error');
-                    res.sendStatus(1);
-                } else {
-                    var script = scripts_dir() + "/fbp-runner.sh";
-                    script = script + ' start ' + tmp_dir(current_user(req));
-                    if (conf) {
-                        script = script + " " + conf;
-                    }
-                    console.log("SCRIPT->" + script);
-                    getConfigureFile(current_user(req), conf, function (error) {
-                        child = exec("sh " + script);
-                        child.stdout.on('data', function(data) {
-                            stdout += data;
-                            console.log('stdout: ' + data);
-                        });
-                        child.stderr.on('data', function(data) {
-                            console.log('stderr: ' + data);
-                        });
-                        child.on('close', function(code) {
-                            console.log('closing code: ' + code);
-                            if (name) {
-                                runningFBPName = name;
-                            }
-                            res.sendStatus(code);
-                        });
-                    });
-                }
+                var script = scripts_dir() + "/fbp-runner.sh";
+                script = script + ' start ' + fbp_path;
+                if (conf) {
+                    script = script + " " + conf;
+               }
+               getConfigureFile(current_user(req), conf, function (error) {
+                   child = exec("sh " + script);
+                   child.stdout.on('data', function(data) {
+                       stdout += data;
+                       console.log('stdout: ' + data);
+                   });
+                   child.stderr.on('data', function(data) {
+                       console.log('stderr: ' + data);
+                   });
+                   child.on('close', function(code) {
+                       console.log('closing code: ' + code);
+                       if (fbp_path) {
+                           var path_array = fbp_path.split("/");
+                       }
+                           res.sendStatus(code);
+                   });
+               });
             }
         } else {
             res.status(404).send("Unsupported api");
@@ -236,25 +231,26 @@
     //SOL_FLOW_MODULE_RESOLVER_CONFFILE=sol-flow-new.json sol-fbp-runner example.fbp
     router.get('/api/check/fbp', function(req, res) {
         var spawn = require('child_process').spawn;
+        var fbp_path = req.query.fbp_path;
         var code = req.query.code;
         var conf = req.query.conf;
-        if (!code) {
+        if (!fbp_path || !code) {
             res.send("Error: Empty should not being checked!");
         } else {
             var child;
             var error;
             var stdout = "";
-            var err = writeFile(tmp_dir(current_user(req)) + "fbp_syntax.fbp", code);
+            var err = writeFile(fbp_path, code);
             if (err) {
                 console.log('Write File error');
                 res.send(err);
             }
-            console.log('Running command sol-fbp-runner -c '+ tmp_dir(current_user(req)) + 'fbp_syntax.fbp');
+            console.log('Running command sol-fbp-runner -c '+ fbp_path);
             if (conf) {
-                child = spawn("sol-fbp-runner",  ['-c',  tmp_dir(current_user(req)) + 'fbp_syntax.fbp'],
+                child = spawn("sol-fbp-runner",  ['-c',  fbp_path],
                               {env: {SOL_FLOW_MODULE_RESOLVER_CONFFILE: conf}});
             } else {
-                child = spawn("sol-fbp-runner",  ['-c', tmp_dir(current_user(req)) + 'fbp_syntax.fbp']);
+                child = spawn("sol-fbp-runner",  ['-c', fbp_path]);
             }
             child.on('error', function(err) {
                 error = true;
@@ -437,13 +433,18 @@
         if (jConf.run_fbp_access === true) {
             var exec = require('child_process').exec;
             var child;
-            var script = scripts_dir() + "/fbp-runner.sh";
-            script = script + ' stop ' + tmp_dir(current_user(req));
-            child = exec("sh " + script);
-            child.on('close', function(code) {
-                console.log('closing code: ' + code);
-                res.sendStatus(code);
-            });
+            var fbp_path = req.body.params.fbp_path;
+            if (!fbp_path) {
+                res.status(400).send("Failed to get running FBP path");
+            } else {
+                var script = scripts_dir() + "/fbp-runner.sh";
+                script = script + ' stop ' + fbp_path;
+                child = exec("sh " + script);
+                child.on('close', function(code) {
+                    console.log('closing code: ' + code);
+                    res.sendStatus(code);
+                });
+            }
         } else {
             res.status(404).send("Unsupported api");
         }
