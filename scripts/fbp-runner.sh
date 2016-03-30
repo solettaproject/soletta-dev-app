@@ -20,11 +20,11 @@ export SOL_LOG_PRINT_FUNCTION="journal"
 if [ $# -eq 3 ]; then
     export SOL_FLOW_MODULE_RESOLVER_CONFFILE=$3
 fi
-USER_TMP="$2"
-echo "USER_TMP="$USER_TMP
-SERVICE="fbp-runner@"$(systemd-escape $USER_TMP)
+FBP_PATH="$2"
+echo "FBP_PATH="$FBP_PATH
+SERVICE="fbp-runner@"$(systemd-escape $FBP_PATH)
 echo "SERVICE="$SERVICE
-SCRIPT="$USER_TMP/fbp_runner.fbp"
+SCRIPT="$FBP_PATH"
 systemctl stop $SERVICE
 if [ $1 == "start" ]; then
     syntax=`sol-fbp-runner -c $SCRIPT | grep OK`
