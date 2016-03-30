@@ -32,7 +32,7 @@ require ('./lib/init.js')();
 require ('./lib/filesystem.js')();
 
 // Default nodeTypes json files
-var nodeTypesPath = "/home/phoenix007/gsoc/soletta/build/soletta_sysrootsoletta/share/soletta/flow/descriptions";
+var nodeTypesPath = "/usr/share/soletta/flow/descriptions";
 
 var functions = {
 
