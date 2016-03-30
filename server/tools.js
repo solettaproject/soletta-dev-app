@@ -78,6 +78,22 @@ module.exports = function () {
         };
     };
 
+    this.generateHiddenPath = function(path) {
+        var array_path;
+        var fbp_name;
+        var fbp_path;
+
+        if (!path) {
+            return null;
+        }
+
+        array_path = path.split("/");
+        fbp_name = array_path.pop();
+        fbp_path = array_path.join("/");
+
+        return fbp_path + "/." + fbp_name;
+    }
+
     this.writeFile = function(path, body) {
         var fs = require('fs');
         var err = fs.writeFileSync(path, body);

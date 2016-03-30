@@ -22,6 +22,7 @@
         function ($compile, $scope, $http, $interval, $document, broadcastService,
                   FetchFileFactory, usSpinnerService, svConf) {
                 var isRunningSyntax = false;
+                var runningFBP;
                 var promiseCheckSyntax;
                 var promiseServiceStatus;
                 var promiseRunViewer;
@@ -290,7 +291,7 @@
                     $http.get('/api/journald',
                     {
                         params: {
-                            "unit_name": "fbp-runner@"
+                            "unit_path": runningFBP,
                         }
                     }).success(function(data) {
                         $scope.RunViewer = data;
@@ -302,11 +303,14 @@
                 $scope.run = function() {
                     if ($scope.isServiceRunning) {
                         //Post stop service
-                        $http.post('/api/fbp/stop').success(function(data) {
-                            if (data == 1) {
-                               alert("FBP Service failed to stop");
-                            }
-                        });
+                        $http.post('/api/fbp/stop',
+                            {
+                                params: {"fbp_path": runningFBP}
+                            }).success(function(data) {
+                                if (data == 1) {
+                                   alert("FBP Service failed to stop");
+                                }
+                            });
                     } else if ($scope.fbpType === true && $scope.buttonSyncDisabled === false) {
                         var fbpCode = editor.getSession().getValue();
                         var fbpName = $scope.fileName;
@@ -315,14 +319,19 @@
                         if (conf === "none") {
                             conf = null;
                         }
+                        if (!filePath) {
+                            filePath = "/tmp/cached.fbp";
+                        }
                         $http.post('/api/fbp/run',
                                 {params: {
                                     "fbp_name": fbpName,
+                                    "fbp_path": filePath,
                                     "code": fbpCode,
                                     "conf": conf
                                 }
                             }).success(function(data) {
                                 if (data == 0) {
+                                    runningFBP = filePath;
                                     $scope.openRunDialog();
                                 } else {
                                     alert("FBP Failed to run");
@@ -344,11 +353,15 @@
                 window.onbeforeunload = onBeforeUnload_Handler;
                 function onBeforeUnload_Handler() {
                     if ($scope.isServiceRunning) {
-                        $http.post('/api/fbp/stop').success(function(data) {
-                            if (data == 1) {
-                                alert("FBP Service failed to stop. Process should be stopped manually");
-                            }
-                        });
+                        $http.post('/api/fbp/stop',
+                                {params: {
+                                    "fbp_path": runningFBP
+                                }
+                            }).success(function(data) {
+                                if (data == 1) {
+                                    alert("FBP Service failed to stop. Process should be stopped manually");
+                                }
+                            });
                     }
 
                     if ($scope.shouldSave === true) {
@@ -366,15 +379,19 @@
                         if (conf === "none") {
                             conf = null;
                         }
+                        if (!filePath) {
+                            filePath = "/tmp/cached.fbp";
+                        }
                         $http.get('/api/check/fbp',
                                 {params: {
+                                             "fbp_path": filePath,
                                              "code": fbpCode,
                                              "conf": conf
                                          }
                                 }).success(function(data) {
                                     $scope.FBPSyntax = data.trim();
-                                    var errorline = data.match(/fbp_syntax\.fbp:[0-9]+:[0-9]+/g);
-                                    var errorDesc = data.split(/fbp_syntax\.fbp:[0-9]+:[0-9]+/g);
+                                    var errorline = data.match(/.+\.fbp:[0-9]+:[0-9]+/g);
+                                    var errorDesc = data.split(/.+\.fbp:[0-9]+:[0-9]+/g);
                                     editor.getSession().removeMarker(markId);
                                     editor.getSession().clearAnnotations();
                                     if (errorline) {
@@ -651,23 +668,27 @@
                 };
 
                 $scope.getServiceStatus = function () {
-                    $http.get('/api/service/status',
-                            {params: {
-                                         "service": "fbp-runner.service"
-                                     }
+                        if (runningFBP) {
+                            $http.get('/api/service/status',
+                            {
+                                params: { "fbp_path": runningFBP }
                             }).success(function(data) {
-                                $scope.startServiceStatus();
                                 $scope.ServiceStatus = data.trim();
                                 if ($scope.ServiceStatus.indexOf("active (running)") > -1) {
                                     $scope.isServiceRunning = true;
                                 } else {
                                     $scope.isServiceRunning = false;
                                 }
-                                $scope.ServiceStatus = $scope.ServiceStatus.replace(/since.*;/,"");
+                                if (runningFBP) {
+                                    $scope.ServiceStatus = $scope.ServiceStatus.replace(/since.*;/,"");
+                                } else {
+                                    $scope.ServiceStatus = runningFBP + " - " + $scope.ServiceStatus.replace(/since.*;/,"");
+                                }
                             }).error(function(){
-                                $scope.startServiceStatus();
                                 $scope.ServiceStatus = "Failed to get service information";
                             });
+                        }
+                        $scope.startServiceStatus();
                 };
 
                 $scope.refreshTree = function () {
