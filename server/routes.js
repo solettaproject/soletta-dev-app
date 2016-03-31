@@ -390,6 +390,21 @@
         });
     });
 
+    router.post('/api/git/repo/create/project', function (req, res) {
+        var project_name = req.body.params.project_name;
+        if (!project_name) {
+            res.status(400).send("Failed to get project name");
+        }
+        execOnServer('mkdir ' + home_dir(current_user(req)) + project_name,
+                     function(returns) {
+            if (returns.error === true) {
+                res.status(400).send("Failed to run command on server");
+            } else {
+                res.send(returns.message);
+            }
+        });
+    })
+
     router.post('/api/git/repo/create/folder', function (req, res) {
         var folder_path = req.body.params.folder_path;
         if (!folder_path) {

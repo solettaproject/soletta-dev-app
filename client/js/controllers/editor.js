@@ -526,6 +526,52 @@
 
                 }
 
+                $scope.createProject = function () {
+                    var dialog = $('<div></div>').
+                                 html($compile('<input class="inputControls"' +
+                                               ' type="text" style="width: 256px; outline: 0;"' +
+                                               ' ng-model="prj_name" />')($scope)).
+                    dialog({
+                        title: "Choose the name of the project",
+                        autoOpen: false,
+                        modal: true,
+                        position: { at: "center top"},
+                        height: 167,
+                        width: 300,
+                        show: { effect: "fade", duration: 300 },
+                        hide: {effect: "fade", duration: 300 },
+                        resizable: 'disable',
+                        buttons: {
+                            "Create": function() {
+                                var name = "/" + $scope.prj_name;
+                                if (name) {
+                                    $http.post('/api/git/repo/create/project',
+                                    {
+                                        params: {
+                                            "project_name": name
+                                        }
+                                    }).success(function(data) {
+                                        $scope.refreshTree();
+                                    }).error(function(){
+                                        alert("Oh uh, something went wrong. Try again");
+                                    });
+                                } else {
+                                    alert("Oh uh, something went wrong. Try again");
+                                }
+                                $(this).dialog("close");
+                            },
+                            Cancel: function() {
+                                $(this).dialog("close");
+                                }
+                            },
+                            close: function(ev, ui){
+                                $(this).dialog("close");
+                            }
+                    });
+                    dialog.dialog("open");
+
+                };
+
                 $scope.newFolder = function () {
                     var file = filePath;
                     if (isLeaf) {
@@ -548,7 +594,7 @@
                         hide: {effect: "fade", duration: 300 },
                         resizable: 'disable',
                         buttons: {
-                            "Apply": function() {
+                            "Create": function() {
                                 var name = "/" + $scope.folder_name;
                                 if (name) {
                                     $http.post('/api/git/repo/create/folder',
@@ -600,7 +646,7 @@
                           hide: {effect: "fade", duration: 300 },
                           resizable: 'disable',
                           buttons: {
-                              "Apply": function() {
+                              "Create": function() {
                                   var name = "/" + $scope.file_name;
                                   if (name) {
                                       $http.post('/api/git/repo/create/file',
