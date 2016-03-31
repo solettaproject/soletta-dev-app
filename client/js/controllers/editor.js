@@ -75,6 +75,7 @@
                     var _l = data.node.li_attr;
                     var repos = _l.id.split("repos")[1];
                     var rfinal = repos.split("/");
+                    var previousContent = editor.getSession().getValue();
                     $scope.subFolder = rfinal[1];
                     $scope.folder = rfinal[2];
                     $scope.getConfigurationlist(_l.id);
@@ -83,7 +84,6 @@
                     if (_l.isLeaf) {
                         FetchFileFactory.fetchFile(_l.base).then(function(data) {
                             var _d = data.data;
-                            var previousContent = editor.getSession().getValue();
                             if (typeof _d == 'object') {
                                 _d = JSON.stringify(_d, undefined, 2);
                             }
@@ -108,25 +108,25 @@
                         });
                         $scope.root = false;
                     } else {
-                        filePath = _l.id;
-                        $scope.fileName = ': ' + filePath.split("/").pop(); //getting the selected node name
-                        editor.setReadOnly(true);
-                        editor.setHighlightActiveLine(false);
                         if (data.node.parent === "#") {
                             $scope.root = true;
-                            $scope.setEditorContent('Please select a file to view its contents', null, null);
+                            $scope.setEditorContent('Please select a file to view its contents', previousContent, filePath);
                         } else {
                             if (data.node.parents[1] === "#") {
                                 $scope.root = true;
-                                $scope.setEditorContent('Please select a file to view its contents', null, null);
+                                $scope.setEditorContent('Please select a file to view its contents', previousContent, filePath);
                             } else {
                                 if (!isLeaf) {
-                                    $scope.setEditorContent('Please select a file to view its contents', null, null);
+                                    $scope.setEditorContent('Please select a file to view its contents', previousContent, filePath);
                                 }
                                 $scope.root = false;
                             }
                         }
+                        filePath = _l.id;
+                        $scope.fileName = ': ' + filePath.split("/").pop(); //getting the selected node name
                         $scope.fbpType = false;
+                        editor.setReadOnly(true);
+                        editor.setHighlightActiveLine(false);
                     }
                 };
 
@@ -444,7 +444,7 @@
                 };
 
                 $scope.saveFile = function(path, body) {
-                    if (body && path && isLeaf) {
+                    if (body && path) {
                         $http.get('api/file/write',
                                   {params: {
                                       "file_path": path,
