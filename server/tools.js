@@ -49,7 +49,9 @@ module.exports = function () {
         fs.readdir(_p, function(err, list) {
             if (list) {
                 for (var i = list.length - 1; i >= 0; i--) {
-                    resp.push(processNode(_p, list[i]));
+                    if (list[i].charAt(0) !== ".") {
+                        resp.push(processNode(_p, list[i]));
+                    }
                 }
             }
             res.json(resp);
