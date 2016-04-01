@@ -2,7 +2,6 @@
     <head>
         <meta charset="utf-8">
         <title>Soletta Development Application</title>
-
         <link rel="stylesheet" type="text/css" href="/libs/bootstrap/dist/css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="/jstree/themes/default/style.css">
         <link rel="stylesheet" type="text/css" href="/css/app.css">
@@ -39,6 +38,7 @@
         <script src="/libs/ng-context-menu/dist/ng-context-menu.min.js"></script>
         <script src="/js/collapse/ui-bootstrap-custom-0.13.1.min.js"></script>
         <script src="/js/combobox/jquery-ui-custom-combobox.js"></script>
+        <script src="/libs/ace-builds/src-min/ext-language_tools.js"></script>
         <script>
             $(function() {
                 var currentContent = $('#cb');
@@ -136,7 +136,6 @@
                         </div>
                     </form>
                 </div>
-
                 <div style="vertical-align: text-bottom;">
                     <div ng-if="libChecked == true" class="blueLabel" style="margin-left:20px; width:330px;">
                         Projects
@@ -191,8 +190,18 @@
                     </div>
                 </div>
             </div> <!--close tabcontents !-->
-
-
+           <!-- Enable autocomplete -->
+<script>
+    // trigger extension
+    ace.require("ace/ext/language_tools");
+    var editor = ace.edit("fbp_editor");
+    // enable autocompletion and snippets
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
+</script>
 
             <!-- -------------------------------------------------------------- !-->
             <!-- SYSTEMD JOURNAL !-->

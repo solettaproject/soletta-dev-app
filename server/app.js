@@ -26,7 +26,7 @@
 
     var routes = require('./routes.js');
     require('./configuration.js')();
-
+    
     try {
         var app = express();
         var jConf;
@@ -60,7 +60,6 @@
                 })
             }));
         }
-
         // view engine setup
         app.set('views', path.join(__dirname, 'views'));
         app.engine('html', require('ejs').renderFile);
@@ -90,6 +89,7 @@
                 console.log('Express server listening on port ' + server.address().port);
             }
         });
+
 
         server.once('error', function(err) {
             if (err.code === 'EADDRINUSE') {
