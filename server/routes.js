@@ -94,20 +94,19 @@
         var stdout = "";
 
         if (code) {
-            execOnServer('echo "' + code + '" > ' + tmp_dir(current_user(req)) + 'fbp_svg.fbp', function (returns) {
-                var child_dot = spawn('sol-fbp-to-dot', ['--fbp', tmp_dir(current_user(req)) + 'fbp_svg.fbp',
-                                     '--dot', tmp_dir(current_user(req)) + 'fbp_runner.dot']);
-                child_dot.on('close', function(code) {
-                    var child_svg =  spawn('dot', ['-Tsvg', tmp_dir(current_user(req)) + 'fbp_runner.dot']);
-                    child_svg.stdout.on('data', function(data) {
-                        stdout += data;
-                    });
-                    child_svg.stderr.on('data', function(data) {
-                        stdout = "Failed to run dot command";
-                    });
-                    child_svg.on('close', function(code) {
-                        res.send(stdout);
-                    });
+            writeFile(tmp_dir(current_user(req)) + 'fbp_svg.fbp', code);
+            var child_dot = spawn('sol-fbp-to-dot', ['--fbp', tmp_dir(current_user(req)) + 'fbp_svg.fbp',
+                                  '--dot', tmp_dir(current_user(req)) + 'fbp_runner.dot']);
+            child_dot.on('close', function(code) {
+                var child_svg =  spawn('dot', ['-Tsvg', tmp_dir(current_user(req)) + 'fbp_runner.dot']);
+                child_svg.stdout.on('data', function(data) {
+                    stdout += data;
+                });
+                child_svg.stderr.on('data', function(data) {
+                    stdout = "Failed to run dot command";
+                });
+                child_svg.on('close', function(code) {
+                    res.send(stdout);
                 });
             });
         } else {
