@@ -32,10 +32,14 @@
         var jConf;
         var args = process.argv.slice(2);
         var server = process.argv.slice(1)[0];
-        if (args.length === 0 || server.indexOf("protractor")) {
+        if (args.length === 0) {
             jConf = getConfigurationJson();
         } else {
-            jConf = getConfigurationJson(args[0]);
+            if (args[0] === 'protractor.config.js') {
+                jConf = getConfigurationJson('test_case/configuration_test.json');
+            } else {
+                jConf = getConfigurationJson(args[0]);
+            }
         }
 
         if (jConf.session_system === true) {
@@ -79,11 +83,7 @@
 
         app.use('/', routes);
 
-        if (server.indexOf("protractor")) {
-            app.set('port', process.env.PORT || 8080);
-        } else {
-            app.set('port', process.env.PORT || jConf.server_port);
-        }
+        app.set('port', process.env.PORT || jConf.server_port);
 
         var server = app.listen(app.get('port'), function() {
             if (jConf.server_output) {
