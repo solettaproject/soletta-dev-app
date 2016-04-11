@@ -30,6 +30,7 @@
                 var schemaDiag;
                 var filePath;
                 var isLeaf;
+                $scope.clipboard = "";
                 $scope.syntaxCheckRefreshPeriod = 1100;
                 $scope.runConf = false;
                 $scope.loginConf = false;
@@ -46,6 +47,9 @@
                         $scope.startServiceStatus();
                     }
                 });
+                $scope.showhideCode = "Hide Code Viewer";
+                $scope.showhideFlow = "Hide Flow Viewer";
+                $scope.showhideProject = "Hide Project Viewer";
                 $scope.libChecked = true;
                 $scope.codeChecked = true;
                 $scope.svgChecked = true;
@@ -780,6 +784,66 @@
                                 return "button_run_off";
                             }
                         }
+                    }
+                };
+
+                this.menuAction = function(name, ev) {
+                    switch(name) {
+                        case "file.projectnew":
+                            $scope.createProject();
+                            break;
+                        case "file.folder":
+                            $scope.newFolder();
+                            break;
+                        case "file.new":
+                            $scope.newFile();
+                            break;
+                        case "file.save":
+                            $scope.saveFileManually();
+                            break;
+                        case "file.remove":
+                            $scope.remove();
+                            break;
+                        case "edit.undo":
+                            editor.session.getUndoManager().undo();
+                            break;
+                        case "edit.redo":
+                            editor.session.getUndoManager().redo();
+                            break;
+                        case "edit.copy":
+                            $scope.clipboard = editor.getCopyText();
+                            console.log($scope.clipboard);
+                            break;
+                        case "edit.paste":
+                            editor.insert($scope.clipboard, true);
+                            break;
+                        case "edit.selectall":
+                            editor.selectAll();
+                            break;
+                        case "view.code":
+                            $scope.codeChecked = !$scope.codeChecked;
+                            if ($scope.codeChecked) {
+                                $scope.showhideCode = "Hide Code Viewer";
+                            } else {
+                                $scope.showhideCode = "Show Code Viewer";
+                            }
+                            break;
+                        case "view.flow":
+                            $scope.svgChecked = !$scope.svgChecked;
+                            if ($scope.svgChecked) {
+                                $scope.showhideFlow = "Hide Flow Viewer";
+                            } else {
+                                $scope.showhideFlow = "Show Flow Viewer";
+                            }
+                            break;
+                        case "view.project":
+                            $scope.libChecked = !$scope.libChecked;
+                            if ($scope.libChecked) {
+                                $scope.showhideProject = "Hide Project Viewer";
+                            } else {
+                                $scope.showhideProject = "Show Project Viewer";
+                            }
+                            break;
                     }
                 };
 

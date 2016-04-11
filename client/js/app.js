@@ -16,7 +16,7 @@
 
 (function() {
     'use strict';
-    window.app = angular.module('soletta-devapp', ['ngRoute', 'jsTree.directive', 'hljs', 'ngLoadScript',
+    window.app = angular.module('soletta-devapp', ['ngMaterial', 'ngAria', 'ngRoute', 'jsTree.directive', 'hljs', 'ngLoadScript',
                                 'angularSpinner','datatables', 'ui.ace', 'ng-context-menu', 'ui.bootstrap.collapse']).
                                 config(['$routeProvider',
                                         function($routeProvider) {

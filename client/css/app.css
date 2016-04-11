@@ -184,155 +184,33 @@ iframe{
     font-size: 14px !important;
 }
 
-.button_schema_on {
-    background-color: white;
-    background-repeat: no-repeat;
-    width:61px;
-    height:45px;
-    border: 0;
-    position: relative;
-    bottom: 0;
-    outline: 0;
-}
-
-.button_code_on {
-    background:url(../imgs/code_on.png);
-    background-repeat: no-repeat;
-    width:41px;
-    height:45px;
-    border: 0;
-    position: relative;
-    bottom: -17;
-    outline: 0;
-}
-
-.button_code_off {
-    background:url(../imgs/code_off.png);
-    background-repeat: no-repeat;
-    width:41px;
-    height:45px;
-    border: 0;
-    position: relative;
-    bottom: -17;
-    outline: 0;
-}
-
-.button_svg_on {
-    background:url(../imgs/graph_on.png);
-    background-repeat: no-repeat;
-    width:41px;
-    height:45px;
-    border: 0;
-    position: relative;
-    bottom: -17;
-    outline: 0;
-}
-
-.button_svg_off {
-    background:url(../imgs/graph_off.png);
-    background-repeat: no-repeat;
-    width:41px;
-    height:45px;
-    border: 0;
-    position: relative;
-    bottom: -17;
-    outline: 0;
-}
-
-.button_lib_on {
-    background:url(../imgs/tree_view_on.png);
-    background-repeat: no-repeat;
-    width:41px;
-    height:45px;
-    border: 0;
-    position: relative;
-    bottom: -17;
-    outline: 0;
-}
-
-.button_lib_off {
-    background:url(../imgs/tree_view_off.png);
-    background-repeat: no-repeat;
-    width:41px;
-    height:45px;
-    border: 0;
-    position: relative;
-    bottom: -17;
-    outline: 0;
-}
-
-.button_save_on {
-    background:url(../imgs/button_save_en.png);
-    background-repeat: no-repeat;
-    width:41px;
-    height:45px;
-    border: 0;
-    position: relative;
-    bottom: -17;
-    outline: 0;
-}
-
-.button_save_off {
-    background:url(../imgs/button_save_dis.png);
-    background-repeat: no-repeat;
-    width:41px;
-    height:45px;
-    border: 0;
-    position: relative;
-    bottom: -17;
-    outline: 0;
-}
-
-.button_login_on {
-    background:url(../imgs/login_on.png);
-    background-repeat: no-repeat;
-    width:231px;
-    height:45px;
-    border: 0;
-    position: relative;
-    bottom: -17;
-    outline: 0;
-}
-
-.button_login_off {
-    background:url(../imgs/login_off.png);
-    background-repeat: no-repeat;
-    width:231px;
-    height:45px;
-    border: 0;
-    position: relative;
-    bottom: -17;
-    outline: 0;
-    float: right;
-}
-
 .button_run_off {
     background:url(../imgs/button_run_off.png);
     background-repeat: no-repeat;
-    width:40px;
-    height:45px;
+    width:78px;
+    height:32px;
     outline: 0;
-    margin-top: -10px;
+    margin-top: -5px;
     margin-left: 5px;
 }
 
 .button_run_on {
     background:url(../imgs/button_run_on.png);
     background-repeat: no-repeat;
-    width:40px;
-    height:45px;
+    width:78px;
+    height:32px;
     outline: 0;
-    margin-top: -10px;
+    margin-top: -5px;
     margin-left: 5px;
 }
 
 .button_stop {
     background:url(../imgs/button_stop.png);
     background-repeat: no-repeat;
-    width:40px;
-    height:45px;
+    width:78px;
+    height:32px;
     outline: 0;
-    margin-top: -10px;
+    margin-top: -5px;
     margin-left: 5px;
 }
 
@@ -377,7 +255,7 @@ iframe{
   .button_lib_off{
     bottom:3;
   }
-
+}
   .serviceStatus{
       margin-top: -60px;
   }
@@ -387,4 +265,25 @@ iframe{
   .button_save_off{
     bottom:3;
   }
-}
+
+  .menuBardemoBasicUsage .page-container {
+    padding: 32px;
+  }
+
+  .menuBardemoBasicUsage .page {
+    margin: 0 auto;
+    padding: 24px;
+    max-width: 680px;
+    box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.25);
+  }
+
+  .menuBardemoBasicUsage .page h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-top: 0;
+   font-weight: normal;
+  }
+
+  .menuBardemoBasicUsage .page p {
+    line-height: 1.6rem;
+  }

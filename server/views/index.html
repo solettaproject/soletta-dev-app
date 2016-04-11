@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="/css/app.css">
         <link rel="stylesheet" type="text/css" href="/libs/highlightjs/styles/railscasts.css">
         <link rel="stylesheet" type="text/css" href="/libs/angular-datatables/dist/plugins/bootstrap/datatables.bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/libs/angular-material/angular-material.min.css">
         <link rel="stylesheet" type="text/css" href="/css/all.css">
         <link rel="stylesheet" type="text/css" href="/css/jquery-ui.css">
         <link rel="stylesheet" type="text/css" href="/css/dialog.css">
@@ -31,6 +32,10 @@
         <script src="/libs/datatables/media/js/jquery.dataTables.min.js"></script>
         <script src="/libs/angular-datatables/dist/angular-datatables.min.js"></script>
         <script src="/libs/angular-ui-ace/ui-ace.min.js"></script>
+        <script src="/libs/angular-material/angular-material.min.js"></script>
+        <script src="/libs/angular-animate/angular-animate.min.js"></script>
+        <script src="/libs/angular-messages/angular-messages.min.js"></script>
+        <script src="/libs/angular-aria/angular-aria.min.js"></script>
         <script src="/libs/ace-builds/src-min/ace.js"></script>
         <script src="/libs/ace-builds/src-min/ext-modelist.js"></script>
         <script src="/libs/underscore/underscore-min.js"></script>
@@ -113,25 +118,110 @@
                 <!-- -------------------------------------------------------------- !-->
                 <!-- Editor !-->
                 <!-- -------------------------------------------------------------- !-->
-                <div ng-controller="editor" id="cb">
+                <div ng-controller="editor as ctrl" id="cb">
                     <!-- TOP OF THE PAGE !-->
                     <div class="container" style="width: 100%;">
 
-                    <!--CODE FLOW CONTROLS ON THE TOP !-->
-                    <form ng-submit="syncGit()">
-                        <div class="headerControls" style="margin-right: -7px;">
-                            <button ng-if="schemaOn == true" ng-click="showSchema()" class="button_schema_on" type="button">Schema</button>
-                            <div ng-submit="syncGit()" class="spin_sync"  us-spinner="{radius:8.5, width:3, length: 4}" spinner-key="spinner-1"></div>
-                            <input type="text" ng-model="repoUrl" placeholder="Git repository URL" style="outline: 0; width: 320px; margin-right: -2px;" class="inputControls" />
-                            <button type="submit" style="outline: 0;" title="Sync repository git" tabindex="0" id="syncGit" ng-click="syncGit()" ng-disabled="buttonSyncDisabled"/><img src="imgs/button_sync.png"></button>
-                            <!--<button type="button" title="Commit" style="outline: 0; margin-left: -11px;" id="commitGit" ng-click="commitDiag()" ng-disabled="buttonSyncDisabled" href="#"><img src="imgs/button_commit.png"></button>-->
-                            <button type="button" ng-class="{'button_save_on': shouldSave == true, 'button_save_off': shouldSave == false}" ng-click="saveFileManually()" title="Save current file"></button>
-                            <button type="button" ng-class="{'button_lib_on': libChecked == true, 'button_lib_off': libChecked == false}" ng-click="libChecked = !libChecked" title="Collapse projects panel"></button>
-                            <button type="button" ng-class="{'button_code_on': codeChecked == true, 'button_code_off': codeChecked == false}" ng-click="codeChecked = !codeChecked" title="Collapse code panel" ></button>
-                            <button type="button" style="margin-right: 5px;" ng-class="{'button_svg_on': svgChecked == true, 'button_svg_off': svgChecked == false}" ng-click="svgChecked = !svgChecked" title="Collapse SVG panel"></button>
-                            <button type="button" ng-class="processLoginClass()" title="Login" ng-click="logged = !logged"></button>
-                        </div>
-                    </form>
+                    <!--TOP MENU !-->
+                    <div class="menuStyle" style="margin-right: -7px; width: 100%;">
+                        <md-menu-bar class="top-menu-font" style="padding: 0px; width: 220px; margin-left: 11px; margin-top: 8px;">
+                          <md-menu style="margin-right: 15px;">
+                            <button ng-click="$mdOpenMenu()">
+                            File
+                            </button>
+                            <md-menu-content>
+                                <md-menu-item>
+                                    <md-button ng-click="ctrl.menuAction('file.projectnew', $event)">
+                                        New Project
+                                    </md-button>
+                                 </md-menu-item>
+                                 <md-menu-item>
+                                    <md-button ng-click="ctrl.menuAction('file.folder', $event)">
+                                        New Folder
+                                    </md-button>
+                                 </md-menu-item>
+                                 <md-menu-item>
+                                    <md-button ng-click="ctrl.menuAction('file.new', $event)">
+                                        New File
+                                    </md-button>
+                                 </md-menu-item>
+                                 <md-menu-divider></md-menu-divider>
+                                 <md-menu-item>
+                                    <md-button ng-click="ctrl.menuAction('file.save', $event)">
+                                        Save
+                                    </md-button>
+                                 </md-menu-item>
+                                 <md-menu-item>
+                                    <md-button ng-click="ctrl.menuAction('file.remove', $event)">
+                                        Remove File
+                                    </md-button>
+                                 </md-menu-item>
+                                 <md-menu-divider></md-menu-divider>
+                                 <md-menu-item>
+                                    <md-button ng-click="ctrl.menuAction('file.import', $event)">
+                                        Import GIT Project
+                                    </md-button>
+                                 </md-menu-item>
+                            </md-menu-content>
+                          </md-menu>
+                          <md-menu>
+                            <button ng-click="$mdOpenMenu()">
+                                Edit
+                            </button>
+                            <md-menu-content>
+                                <md-menu-item>
+                                    <md-button ng-click="ctrl.menuAction('edit.undo', $event)">
+                                        Undo
+                                    </md-button>
+                                </md-menu-item>
+                                <md-menu-item>
+                                    <md-button ng-click="ctrl.menuAction('edit.redo', $event)">
+                                            Redo
+                                    </md-button>
+                                </md-menu-item>
+                                <md-menu-divider></md-menu-divider>
+                                <md-menu-item>
+                                    <md-button ng-click="ctrl.menuAction('edit.copy', $event)">
+                                        Copy
+                                    </md-button>
+                                </md-menu-item>
+                                <md-menu-item>
+                                    <md-button ng-click="ctrl.menuAction('edit.paste', $event)">
+                                        Paste
+                                    </md-button>
+                                </md-menu-item>
+                                <md-menu-divider></md-menu-divider>
+                                </md-menu-item>
+                                <md-menu-item>
+                                    <md-button ng-click="ctrl.menuAction('edit.selectall', $event)">
+                                        Select All
+                                    </md-button>
+                            </md-menu-content>
+                          </md-menu>
+                          <md-menu>
+                            <button ng-click="$mdOpenMenu()">
+                                View
+                            </button>
+                            <md-menu-content>
+                                <md-menu-item>
+                                    <md-button ng-click="ctrl.menuAction('view.code', $event)">
+                                        {{showhideCode}}
+                                    </md-button>
+                                </md-menu-item>
+                                <md-menu-item>
+                                    <md-button ng-click="ctrl.menuAction('view.flow', $event)">
+                                        {{showhideFlow}}
+                                    </md-button>
+                                 </md-menu-item>
+                                 <md-menu-item>
+                                    <md-button ng-click="ctrl.menuAction('view.project', $event)">
+                                        {{showhideProject}}
+                                    </md-button>
+                                 </md-menu-item>
+                            </md-menu-content>
+                          </md-menu>
+                        </md-menu-bar>
+                    </div>
                 </div>
 
                 <div style="vertical-align: text-bottom;">
