@@ -8,8 +8,8 @@ describe('Index Page', function(){
         // Test loaded CSS
         element(by.css('.menu-item'));
         element(by.css('.blueLabel'));
-        element.all(by.css('.page-title')).first().getText().then(function(text) {
-            expect(text).to.be('Editor');
+        element.all(by.css('.menu-item')).first().getText().then(function(text) {
+            expect(text).to.be('EDITOR');
         });
         browser.ignoreSynchronization = false;
     });

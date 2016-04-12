@@ -6,12 +6,12 @@ describe('Index Page', function(){
         browser.get('/');
         browser.waitForAngular(); //Wait angularjs to load
         /*
-         * This function will test if a repoUrl is NULL. (That means it is empty)
+         * This function will test if a ng-model searchText is NULL.
          * This variable is scopped by angularjs and it is loaded null by default.
          * If this scopped var is not found then we got an error on angularjs and the
          * test will fail
         */
-        element(by.model('repoUrl')).evaluate('repoUrl').then(function(value) {
+        element(by.model('searchText')).evaluate('searchText').then(function(value) {
             if (!value) {
                 return true;
             } else {
