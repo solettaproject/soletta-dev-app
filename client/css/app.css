@@ -1,3 +1,12 @@
+@font-face {
+    font-family: clearsans-bold;
+    src: url(/css/font/ClearSans-Bold.ttf);
+}
+@font-face {
+    font-family: clearsans-light;
+    src: url(/css/font/ClearSans-Light.ttf);
+}
+
 .tree-browser {
   overflow-x: hidden;
   background-color: #2d3237;
@@ -52,21 +61,25 @@ tbody {
   padding-left: 35px;
 }
 .menu-item{
-  display:inline-block;
-  margin-right: 40px;
-  font-size: 0.9em;
-  color: 8c8c8c;
+  display: inline-block;
+  margin-right: 31px;
+  margin-left: -35px;
+  font-size: 12px;
+  font-family: clearsans-bold;
+  color: #616568;
   height: 40px;
   padding-top: 10px;
   box-sizing: border-box;
   cursor: pointer;
+  text-align: center;
+  width: 140px;
 }
 .menu-item-selected{
-  color:white;
-  border-bottom: 3px solid #33b7e9;
+  background-color: #2d3237;
+  border-top: 4px solid #33b7e9;
 }
 .menu-item-hover{
-  color:white;
+  border-top: 4px solid #33b7e9;
 }
 .tabcontents{
     margin-top: 50px;
@@ -219,7 +232,7 @@ iframe{
 }
 
 .ui-widget {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    font-family: clear-sans !important;
     font-size: 14px !important;
 }
 
@@ -265,10 +278,6 @@ iframe{
 
 .disable_div {
     display: none;
-}
-
-.enable_div {
-    display: inline;
 }
 
 .ui-dialog {

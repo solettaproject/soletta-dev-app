@@ -123,9 +123,9 @@
 
         <!-- NAVIGATION MENU !-->
         <div ng-controller="menuController" id="top-menu">
-            <div class='menu-item' id='menu-cb'>Editor</div>
-            <div ng-class="{'enable_div': journal == true, 'disable_div': journal == false}" class='menu-item' id='menu-sj'>Systemd Journal</div>
-            <div ng-class="{'enable_div': cheat_sheet == true, 'disable_div': cheat_sheet == false}" class='menu-item' id='menu-sc'>Cheat Sheet</div>
+            <div align="center" class='menu-item' id='menu-cb'>EDITOR</div>
+            <div  align="center" ng-class="{'enable_div': journal == true, 'disable_div': journal == false}" class='menu-item' id='menu-sj'>JOURNAL</div>
+            <div  align="center" ng-class="{'enable_div': cheat_sheet == true, 'disable_div': cheat_sheet == false}" class='menu-item' id='menu-sc'>CHEAT SHEET</div>
         </div>
 
         <!-- CONTENT REGION !-->
@@ -136,7 +136,7 @@
                 <!-- -------------------------------------------------------------- !-->
                 <div ng-controller="editor as ctrl" id="cb">
                     <!-- TOP OF THE PAGE !-->
-                    <div class="container" style="width: 100%;">
+                    <div class="container" style="width: 100%; height: 56px;">
 
                     <!--TOP MENU !-->
                     <div class="menuStyle" style="margin-right: -7px; width: 100%;">
@@ -145,7 +145,7 @@
                             <button ng-click="$mdOpenMenu()">
                             File
                             </button>
-                            <md-menu-content>
+                            <md-menu-content style="font-family: clearsans-light">
                                 <md-menu-item>
                                     <md-button ng-click="ctrl.menuAction('file.projectnew', $event)">
                                         New Project
@@ -180,11 +180,11 @@
                                  </md-menu-item>
                             </md-menu-content>
                           </md-menu>
-                          <md-menu>
+                          <md-menu style="margin-right: 15px;">
                             <button ng-click="$mdOpenMenu()">
                                 Edit
                             </button>
-                            <md-menu-content>
+                            <md-menu-content style="font-family: clearsans-light">
                                 <md-menu-item>
                                     <md-button ng-click="ctrl.menuAction('edit.undo', $event)">
                                         Undo
@@ -218,7 +218,7 @@
                             <button ng-click="$mdOpenMenu()">
                                 View
                             </button>
-                            <md-menu-content>
+                            <md-menu-content style="font-family: clearsans-light">
                                 <md-menu-item>
                                     <md-button ng-click="ctrl.menuAction('view.code', $event)">
                                         {{showhideCode}}
