@@ -1,4 +1,4 @@
-<html ng-app="soletta-devapp" ng-init="loadingStatus='true'">
+<html ng-app="soletta-devapp" ng-init="loadingStatus='true'" style="background-color: #202429;">
     <head class="header">
         <meta charset="utf-8">
         <title>Soletta Development Application</title>
@@ -80,14 +80,11 @@
                     $(event.target).removeClass('menu-item-hover');
                 })
 
-                //dynamically setting the size of the code browser and viewer
-                defineCodeBrowserHeight();
-
                 //dynamically resizes the height of the components
                 function defineCodeBrowserHeight(){
                     var availableHeight = window.innerHeight- bottomMargin;
                     $('#cb-content').css('height',availableHeight+'px');
-                    $('#tree').css('height',availableHeight+'px');
+                    $('#tree').css('height',availableHeight+23+'px');
                     $('#fbp_editor').css('height',(availableHeight/2)+'px');
                     $('#svgFrame').css('height',(availableHeight/2)+'px');
                 }
@@ -100,6 +97,8 @@
                 $('#configComboBox').combobox();
                 $('#configComboBox').append('<option value="none">none</option>');
 
+                //dynamically setting the size of the code browser and viewer
+                defineCodeBrowserHeight();
             });
         </script>
 
@@ -136,7 +135,7 @@
                 <!-- -------------------------------------------------------------- !-->
                 <div ng-controller="editor as ctrl" id="cb">
                     <!-- TOP OF THE PAGE !-->
-                    <div class="container" style="width: 100%; height: 56px;">
+                    <div class="container" style="width: 100%; height: 56px; background-color: #2D3237 !important;">
 
                     <!--TOP MENU !-->
                     <div class="menuStyle" style="margin-right: -7px; width: 100%;">
@@ -145,7 +144,7 @@
                             <button ng-click="$mdOpenMenu()">
                             File
                             </button>
-                            <md-menu-content style="font-family: clearsans-light">
+                            <md-menu-content class="top-menu-font">
                                 <md-menu-item>
                                     <md-button ng-click="ctrl.menuAction('file.projectnew', $event)">
                                         New Project
@@ -169,7 +168,7 @@
                                  </md-menu-item>
                                  <md-menu-item>
                                     <md-button ng-click="ctrl.menuAction('file.remove', $event)">
-                                        Remove File
+                                        Remove
                                     </md-button>
                                  </md-menu-item>
                                  <md-menu-divider></md-menu-divider>
@@ -184,7 +183,7 @@
                             <button ng-click="$mdOpenMenu()">
                                 Edit
                             </button>
-                            <md-menu-content style="font-family: clearsans-light">
+                            <md-menu-content class="top-menu-font">
                                 <md-menu-item>
                                     <md-button ng-click="ctrl.menuAction('edit.undo', $event)">
                                         Undo
@@ -218,7 +217,7 @@
                             <button ng-click="$mdOpenMenu()">
                                 View
                             </button>
-                            <md-menu-content style="font-family: clearsans-light">
+                            <md-menu-content class="top-menu-font">
                                 <md-menu-item>
                                     <md-button ng-click="ctrl.menuAction('view.code', $event)">
                                         {{showhideCode}}
@@ -259,19 +258,21 @@
                     </div>
 
                     <div  class="running_table" ng-class="{'enable_div': runJournal == true, 'disable_div': runJournal == false}" style="float:right">
-                        <select id="configComboBox" style="background-color:0xFF0000" class="inputControls">
+                        <span style="font-size: 13px; font-family: clearsans-bold; color: #616568; margin-right: 16px;" >CONFIGURATION</span>
+                        <select id="configComboBox" class="inputControls">
                             <option value="" ></option>
                         </select>
                     </div>
-                    <div style="float:right"><span style="margin-right:10px;"><u>Status:</u> {{ServiceStatus}}</span></div>
                 </div>
 
                 <!-- SHOW NODE SOURCE CODE !-->
                 <!--Main container of all code browser content !-->
-                <div id="cb-content" class="row show-source" style="width: 100%; height: 100%; background-color:#2d3237">
+                <div id="cb-content" class="row show-source" style="width: 100%; height: 100%; background-color:#202429">
                     <!--Tree view !-->
-                    <div collapse="!libChecked" context-menu id="tree" class="col-md-4 tree-browser" data-target="menu-1" ng-class="{ 'highlight': highlight, 'expanded' : expanded }" style="float: left;" ng-attr-style="{{codeChecked || svgChecked && 'width: 350px;' || 'width: 100%;' }}">
-                        <js-tree id="jstree" ui-tree="rootTree" tree-events="select_node:nodeSelected;ready:readyCB" tree-ajax="/api/tree"></js-tree>
+                    <div id="wrap">
+                        <div collapse="!libChecked" context-menu id="tree" class="col-md-4 tree-browser" data-target="menu-1" ng-class="{ 'highlight': highlight, 'expanded' : expanded }" style="height: 100%;" ng-attr-style="{{codeChecked || svgChecked && 'width: 350px;' || 'width: 100%;' }}">
+                            <js-tree id="jstree" ui-tree="rootTree" tree-events="select_node:nodeSelected;ready:readyCB" tree-ajax="/api/tree"></js-tree>
+                        </div>
                     </div>
 
                     <!-- DROP DOWN MENU !-->
@@ -284,13 +285,14 @@
                         </ul>
                     </div>
                     <!-- Contains the code viewer and the svg viewer !-->
-                    <div ng-attr-style="{{libChecked && 'margin-left: 360px;' || 'margin-left: 0px;' }}" style="background-color:#262a2e;">
+                    <div ng-attr-style="{{libChecked && 'margin-left: 360px;' || 'margin-left: 0px;' }}" style="background-color:#262a2e; width: 102%;">
                         <div id="codeCheck" collapse="!codeChecked">
                             <div ui-ace="{onChange: editorChanged}" ng-attr-style="{{codeChecked && !svgChecked && 'height: 100%;' || 'height: 50%;'}}" style="width: 100%; float: left;" id="fbp_editor"></div>
                         </div>
-                        <div  id="svgCheck" collapse="!svgChecked" style="overflow-y: scroll; height: 100%; background-color:#262a2e;">
+                        <div  id="svgCheck" collapse="!svgChecked" style="overflow-y: scroll; height: 100%; background-color:#202429;">
                             <div id="svgFrame" style="width:100%;" ng-attr-style="{{svgChecked && !codeChecked && 'height: 100%; width:100%;' || 'height: 50%; width:100%;'}}"></div>
                         </div>
+                        <div class="status-bar" ng-attr-style="{{libChecked && 'margin-left: -10px;' || 'margin-left: 15px;' }}"><span>{{ServiceStatus}}</span></div>
                     </div>
                 </div>
             </div> <!--close tabcontents !-->
@@ -338,8 +340,8 @@
             <!-- -------------------------------------------------------------- !-->
             <!-- CHEAT SHEET !-->
             <!-- -------------------------------------------------------------- !-->
-            <div ng-controller="cheatSheetController" id="sc" class="cheat_sheet" style="height:93vh;" >
-                <iframe style="width:100%; height:100%;" ng-src="{{cheatSheetUrl}}"></iframe>
+            <div ng-controller="cheatSheetController" id="sc" class="cheat_sheet" style="height:90%;" >
+                <iframe style="width:100%; height:90%;" ng-src="{{cheatSheetUrl}}"></iframe>
             </div>
         </div><!--close tabs!-->
     </body>

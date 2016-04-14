@@ -23,7 +23,7 @@
           .appendTo(this.wrapper)
           .val(value)
           .attr("title", "")
-          .attr("placeholder", "Configuration file")
+          .attr("placeholder", "")
           .addClass("custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left")
           .autocomplete({
             delay: 0,

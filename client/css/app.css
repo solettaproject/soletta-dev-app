@@ -11,8 +11,6 @@
   overflow-x: hidden;
   background-color: #2d3237;
   width: 350px;
-
-
 }
 .file-viewer {
   overflow: auto;
@@ -30,6 +28,10 @@
   background-image: url('../imgs/file.png') !important;
   background-position: 0 !important;
 }
+.container {
+    padding-right: 0px !important;
+    padding-left: 0px !important;
+}
 #fbp_editor {
 	width: 100%;
 	height: 80%;
@@ -39,6 +41,11 @@
   position:absolute;
   z-index:20;
   background-color:#540E0d;
+}
+
+.body {
+  font-family: clearsans-light;
+  background-color: #2D3237;
 }
 
 thead, tbody {
@@ -51,7 +58,6 @@ tbody {
     overflow-x: hidden;
 }
 #top-menu{
-  position: fixed;
   left:0px;
   right:0px;
   height: 40px;
@@ -59,6 +65,10 @@ tbody {
   z-index: 999;
   box-sizing: border-box;
   padding-left: 35px;
+}
+.top-menu-font{
+    font-family: clearsans-light;
+    font-size: 14px;
 }
 .menu-item{
   display: inline-block;
@@ -82,16 +92,15 @@ tbody {
   border-top: 4px solid #33b7e9;
 }
 .tabcontents{
-    margin-top: 50px;
-    background-color: #F0F0F0;
+    background-color: #2D3237;
 }
 @font-face{
-	font-family:clearSans;
+	font-family: clearsans-light;
 	src:url(../fonts/ClearSans-Thin.ttf);
 	font-weight:thin;
 }
 .page-title{
-font-family: clearSans;
+font-family: clearsans-light;
   height: 105px;
   color:#8c9196;
   font-size: 4em;
@@ -108,7 +117,7 @@ font-family: clearSans;
 }
 .subtitle{
   margin-right: 210px;
-  color:33b7e9;
+  color:#33b7e9;
   text-transform:uppercase;
   font-size: 0.9em;
   font-weight: bold;
@@ -156,6 +165,7 @@ font-family: clearSans;
     margin-top: 0px;
     color:#8c9196;
     margin-right: 0px;
+    background-color: #2D3237 !important;
 }
 .inputControls{
     height: 40px;
@@ -166,13 +176,32 @@ font-family: clearSans;
     padding-left: 10px;
     border-radius: 20px;
 }
+/* Overwrite jquery ui class*/
+.ui-autocomplete-input, .ui-corner-right {
+    background: none !important;
+    background-color: #262a2e !important;
+    border: none !important;
+    height: 32px !important;
+    margin-top: -5px !important;
+    color: #AFB2B6 !important;
+    width: 328px;
+}
+.ui-widget {
+    font-family: clearsans !important;
+    font-size: 14px !important;
+}
+.ui-autocomplete-input {
+    font-family:"font-family: clearsans-light" !important;
+    font-size: 14px !important;
+ }
 button {
     background: transparent;
     border: 0;
 }
-
-#sj{
-    margin-top: 50px;
+#tree{
+    position: absolute;
+    top: 178px;
+    bottom: 0;
 }
 #cb{
     background-color: #2d3237;
@@ -188,7 +217,6 @@ button {
     margin-top: -40px;
     margin-right: 15px;
 }
-
 .blueLabel{
 	color:#33b7e9;
 	text-transform: capitalize;
@@ -196,6 +224,20 @@ button {
 	box-sizing: border-box;
 	display: inline-block;
 	font-weight: bold;
+	font-family: clearsans-bold;
+}
+.ace-monokai {
+    background-color: #1C2024 !important;
+}
+.ace_gutter {
+    background: none !important;
+    color: #4C5155 !important;
+    background-color: #202429 !important;
+    width: 40px;
+}
+.col-md-4, .tree-browser, .ng-isolate-scopem, .in {
+    font-family: clearsans-light;
+    background-color: #202429 !important;
 }
 
 .bluelabel span {
@@ -228,14 +270,15 @@ iframe{
 .ui-button-icon-only {
     width: 2.2em;
     height: 24px;
-    margin-bottom: 3px;
+    margin-bottom: -6px;
 }
-
-.ui-widget {
-    font-family: clear-sans !important;
-    font-size: 14px !important;
+.status-bar {
+    height: 24px;
+    margin-left: -10px;
+    font-family: clearsans-bold;
+    color: #4A4D51;
+    background-color: #1C2024;
 }
-
 .button_run_off {
     background:url(../imgs/button_run_off.png);
     background-repeat: no-repeat;
