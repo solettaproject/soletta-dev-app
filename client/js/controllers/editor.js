@@ -74,7 +74,6 @@
                 aceConfig.set("modePath", "js/ace/");
                 editor.getSession().setMode("ace/mode/fbp");
                 $scope.fileViewer = '# Write FBP Code here.';
-                $scope.buttonSyncDisabled = false;
                 $scope.nodeSelected = function(e, data) {
                     var _l = data.node.li_attr;
                     var repos = _l.id.split("repos")[1];
@@ -315,7 +314,7 @@
                                    alert("FBP Service failed to stop");
                                 }
                             });
-                    } else if ($scope.fbpType === true && $scope.buttonSyncDisabled === false) {
+                    } else if ($scope.fbpType === true) {
                         var fbpCode = editor.getSession().getValue();
                         var fbpName = $scope.fileName;
                         $scope.newFile = true;
@@ -417,7 +416,7 @@
                                                         "code": fbpCode
                                                      }
                                             }).success(function(data) {
-                                            var themedSvg = data.replace("white", "#262a2e");
+                                            var themedSvg = data.replace("white", "#202429");
                                             $("#svgFrame").html(themedSvg);
                                         }).error(function(){
                                             console.log("Failed to generate SVG");
@@ -571,6 +570,57 @@
                             close: function(ev, ui){
                                 $(this).dialog("close");
                             }
+                    });
+                    dialog.dialog("open");
+
+                };
+
+                $scope.importGITProject = function () {
+                    var dialog = $('<div id="importGITDialog"></div>').
+                                 html($compile('<div class="spin_sync" style="margin-top: -9px; float: right; margin-right: 46px;"' +
+                                               ' us-spinner="{radius:8.5, width:3, length: 4}"' +
+                                               ' spinner-key="spinner-1"></div>' +
+                                               '<input class="inputControls"' +
+                                               ' type="text" style="width: 420px; outline: 0;"' +
+                                               ' ng-model="gitRepoUrl" />')($scope)).
+                    dialog({
+                        title: "GIT repository URL",
+                        autoOpen: false,
+                        modal: true,
+                        position: { at: "center top"},
+                        height: 170,
+                        width: 520,
+                        closeOnEscape: false,
+                        open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
+                        show: { effect: "fade", duration: 300 },
+                        hide: {effect: "fade", duration: 300 },
+                        resizable: 'disable',
+                        buttons: {
+                            "Import": function() {
+                                $http.post('/api/git/repo/sync',{params: {
+                                    "repo_url": $scope.gitRepoUrl,
+                                }}).success(function(data) {
+                                    $scope.refreshTree();
+                                    $scope.libChecked = true;
+                                    $scope.stopSpin();
+                                    $(".ui-dialog-buttonpane button:contains('Close')").button("enable");
+                                    $(".ui-dialog-buttonpane button:contains('Import')").button("enable");
+                                    $scope.gitRepoUrl = "";
+                                }).error(function(data){
+                                    alert(data);
+                                    $scope.stopSpin();
+                                    $(".ui-dialog-buttonpane button:contains('Close')").button("enable");
+                                    $(".ui-dialog-buttonpane button:contains('Import')").button("enable");
+                                });
+                                $scope.startSpin();
+                                console.log(dialog);
+                                $(".ui-dialog-buttonpane button:contains('Close')").button("disable");
+                                $(".ui-dialog-buttonpane button:contains('Import')").button("disable");
+                            },
+                            Close: function() {
+                                $(this).dialog("close");
+                            }
+                        },
                     });
                     dialog.dialog("open");
 
@@ -734,6 +784,9 @@
                                 } else {
                                     $scope.ServiceStatus = runningFBP + " - " + $scope.ServiceStatus.replace(/since.*;/,"");
                                 }
+                                if ($scope.ServiceStatus) {
+                                    $scope.ServiceStatus = "FBP Running Status: " + $scope.ServiceStatus
+                                }
                             }).error(function(){
                                 $scope.ServiceStatus = "Failed to get service information";
                             });
@@ -743,7 +796,6 @@
 
                 $scope.refreshTree = function () {
                     $('#jstree').jstree(true).refresh();
-                    $scope.buttonSyncDisabled = false;
                 };
 
                 $scope.startSpin = function () {
@@ -752,23 +804,6 @@
 
                 $scope.stopSpin = function () {
                     usSpinnerService.stop('spinner-1');
-                };
-
-                $scope.syncGit = function() {
-                    var repo = $scope.repoUrl;
-                    $scope.buttonSyncDisabled = true;
-                    $http.post('/api/git/repo/sync',{params: {
-                        "repo_url": repo,
-                    }}).success(function(data) {
-                        $scope.refreshTree();
-                        $scope.libChecked = true;
-                        $scope.stopSpin();
-                    }).error(function(data){
-                        alert(data);
-                        $scope.stopSpin();
-                        $scope.buttonSyncDisabled = false;
-                    });
-                    $scope.startSpin();
                 };
 
                 $scope.processRunClass = function () {
@@ -803,6 +838,9 @@
                             break;
                         case "file.remove":
                             $scope.remove();
+                            break;
+                        case "file.import":
+                            $scope.importGITProject();
                             break;
                         case "edit.undo":
                             editor.session.getUndoManager().undo();
