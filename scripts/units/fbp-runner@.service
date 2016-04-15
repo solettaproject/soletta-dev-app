@@ -3,8 +3,8 @@ Description=Run FBP Script when using Soletta Devapp in web browser
 
 [Service]
 StandardOutput=journal+console
-WorkingDirectory=%I
-ExecStart=/usr/bin/sol-fbp-runner %I/fbp_runner.fbp
+EnvironmentFile=%I
+ExecStart=/usr/bin/sol-fbp-runner $FBP_FILE
 
 [Install]
 WantedBy=multi-user.target

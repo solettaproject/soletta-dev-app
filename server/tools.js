@@ -35,6 +35,10 @@ module.exports = function () {
         return __dirname + '/../scripts/';
     };
 
+    this.env_file = function(user) {
+        return "/tmp/" + user + '/fbp_run.env';
+    };
+
     this.current_user = function (req) {
         var jConf = getConfigurationJson();
         if (jConf.session_system === true) {

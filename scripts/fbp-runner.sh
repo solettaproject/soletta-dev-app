@@ -17,22 +17,19 @@
 # limitations under the License.
 export SOL_LOG_PRINT_FUNCTION="journal"
 
-if [ $# -eq 3 ]; then
-    export SOL_FLOW_MODULE_RESOLVER_CONFFILE=$3
-fi
-FBP_PATH="$2"
-echo "FBP_PATH="$FBP_PATH
-SERVICE="fbp-runner@"$(systemd-escape $FBP_PATH)
-echo "SERVICE="$SERVICE
-SCRIPT="$FBP_PATH"
+SCRIPT="$3"
+ENV_PATH="$2"
+SERVICE="fbp-runner@"$(systemd-escape $ENV_PATH)
+
 systemctl stop $SERVICE
+
 if [ $1 == "start" ]; then
     syntax=`sol-fbp-runner -c $SCRIPT | grep OK`
     systemctl $1 $SERVICE
     if [ -n "$syntax" ]; then
-	    exit 0
+        exit 0
     else
-	    exit 1
+        exit 1
     fi
 else
     st=`systemctl status $SERVICE | grep "Active:"`
