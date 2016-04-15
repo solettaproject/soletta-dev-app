@@ -668,7 +668,7 @@
                     dialog.dialog("open");
                 };
 
-                $scope.newFile = function () {
+                $scope.createFile = function () {
                     var file = filePath;
                     if (file) {
                         if (isLeaf) {
@@ -819,7 +819,7 @@
                             $scope.newFolder();
                             break;
                         case "file.new":
-                            $scope.newFile();
+                            $scope.createFile();
                             break;
                         case "file.save":
                             $scope.saveFileManually();
