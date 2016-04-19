@@ -1,6 +1,6 @@
 {
   "name": "soletta-dev-app",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Soletta Development Application provides a web-based environment where developers can write, visualize, modify, run, test and debug their Soletta FBP programs. The Soletta Development Application is supposed to run on your target board and it then exposes the development environment through a web server application based on node.js.",
   "main": "index.js",
   "dependencies": {
