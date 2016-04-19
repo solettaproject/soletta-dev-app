@@ -176,7 +176,7 @@
     router.get('/api/file/write', function(req, res) {
         var file_path = req.query.file_path;
         var file_body = req.query.file_body;
-        if (!file_path || !file_body) {
+        if (!isInsideRepo(file_path) || !file_body) {
             res.status(400).send("Failed to get file path or its body");
         } else {
             var hidden_fbp = generateHiddenPath(file_path);
@@ -201,7 +201,7 @@
             var path = req.body.params.fbp_path;
             var code = req.body.params.code;
             var conf = req.body.params.conf;
-            if (!path || !code) {
+            if (!isInsideRepo(path) || !code) {
                 res.sendStatus(1);
             } else {
                 var child;
@@ -256,8 +256,8 @@
         var path = req.query.fbp_path;
         var code = req.query.code;
         var conf = req.query.conf;
-        if (!path || !code) {
-            res.send("Error: Empty should not being checked!");
+        if (!isInsideRepo(path) || !code) {
+            res.send("Error: FBP path or code is not valid");
         } else {
             var child;
             var error;
@@ -343,20 +343,6 @@
         }
     });
 
-    router.post('/api/git/repo/remove', function (req, res) {
-        var repository_path = req.body.params.repo_path;
-        if (!repository_path) {
-            res.status(400).send("Failed to get repository name or its path.");
-        }
-        execOnServer('rm -rf ' + repository_path, function(returns) {
-            if (returns.error === true) {
-                res.status(400).send("Failed to run command on server");
-            } else {
-                res.send(returns.message);
-            }
-        });
-    });
-
     router.post('/api/git/repo/commit', function (req, res) {
         var commit_message = req.body.params.commit_message;
         var branch = req.body.params.branch;
@@ -425,13 +411,17 @@
         if (!folder_path) {
             res.status(400).send("Failed to get folder path and its name");
         }
-        execOnServer('mkdir ' + folder_path, function(returns) {
-            if (returns.error === true) {
-                res.status(400).send("Failed to run command on server");
-            } else {
-                res.send(returns.message);
-            }
-        });
+        if (isInsideRepo(folder_path)) {
+            execOnServer('mkdir ' + folder_path, function(returns) {
+                if (returns.error === true) {
+                    res.status(400).send("Failed to run command on server");
+                } else {
+                    res.send(returns.message);
+                }
+            });
+        } else {
+            res.status(400).send("Error: folder path is not valid.");
+        }
     });
 
     router.post('/api/git/repo/create/file', function (req, res) {
@@ -439,13 +429,17 @@
         if (!file_path) {
             res.status(400).send("Failed to get file path and its name");
         }
-        execOnServer('touch ' + file_path, function(returns) {
-            if (returns.error === true) {
-                res.status(400).send("Failed to run command on server");
-            } else {
-                res.send(returns.message);
-            }
-        });
+        if (isInsideRepo(file_path)) {
+            execOnServer('touch ' + file_path, function(returns) {
+                if (returns.error === true) {
+                    res.status(400).send("Failed to run command on server");
+                } else {
+                    res.send(returns.message);
+                }
+            });
+        } else {
+            res.status(400).send("Error: file path is not valid.");
+        }
     });
 
     router.post('/api/git/repo/delete/file', function (req, res) {
@@ -453,13 +447,17 @@
         if (!file_path) {
             res.status(400).send("Failed to get file path and its name");
         } else {
-            execOnServer('rm -rf ' + file_path, function(returns) {
-                if (returns.error === true) {
-                    res.status(400).send("Failed to run command on server");
-                } else {
-                    res.send(returns.message);
-                }
-            });
+            if (isInsideRepo(file_path)) {
+                execOnServer('rm -rf ' + file_path, function(returns) {
+                    if (returns.error === true) {
+                        res.status(400).send("Failed to run command on server");
+                    } else {
+                        res.send(returns.message);
+                    }
+                });
+            } else {
+                res.status(400).send("Failed to run command on server");
+            }
         }
     });
 

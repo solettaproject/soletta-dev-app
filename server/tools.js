@@ -234,6 +234,19 @@ module.exports = function () {
         );
     };
 
+    this.isInsideRepo = function(repo_url) {
+        if (!repo_url) {
+            return false;
+        } else {
+            if ((repo_url.indexOf("soletta-dev-app") > -1) &&
+                 (repo_url.indexOf("repos") > -1)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
     this.getServerName = function(repo_url) {
         var url_array = repo_url.split("/");
         var name = url_array.pop();
