@@ -1,4 +1,5 @@
-[![Build Status](https://semaphoreci.com/api/v1/projects/dfb56eb8-5c48-4e73-955d-81872d744596/526934/shields_badge.svg)](https://semaphoreci.com/solettaproject/soletta-dev-app)<br>
+[![Build Status](https://semaphoreci.com/api/v1/projects/dfb56eb8-5c48-4e73-955d-81872d744596/526934/shields_badge.svg)](https://semaphoreci.com/solettaproject/soletta-dev-app)
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/8620/badge.svg)](https://scan.coverity.com/projects/8620)
 [![npm version](https://badge.fury.io/js/soletta-dev-app.svg)](http://badge.fury.io/js/soletta-dev-app)
 
 # Soletta Development Application
