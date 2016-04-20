@@ -343,54 +343,6 @@
         }
     });
 
-    router.post('/api/git/repo/commit', function (req, res) {
-        var commit_message = req.body.params.commit_message;
-        var branch = req.body.params.branch;
-        var user = req.body.params.user;
-        var pass = req.body.params.password;
-        var repo = req.body.params.repo;
-        var repo_owner = req.body.params.repo_owner;
-        var github = require('octonode');
-        var path = require('path');
-        var _p = home_dir(current_user(req));
-        var git_dir = _p + "/" + repo_owner + "/" + repo;
-        var client = github.client({
-                                    username: user,
-                                    password: pass
-                                   });
-        client.get('/user', function (err, status, body) {
-            if (typeof status === 'undefined') {
-                res.status(400).send("Verify login or password");
-            } else {
-                if (typeof status === 'undefined') {
-                    res.status(404).send("Error: File not found on github");
-                } else {
-                    execOnServer('git --git-dir=' + git_dir + '/.git add .', function(returns) {
-                        if (returns.error === true) {
-                           res.status(400).send("Failed to run command on server");
-                        } else {
-                            execOnServer('git --git-dir=' + git_dir + '/.git commit -m "' + commit_message + '"' , function(returns) {
-                                if (returns.error === true) {
-                                   res.status(400).send("Failed to run command on server");
-                                } else {
-                                    execOnServer('git --git-dir=' + git_dir + '/.git push https://' + user +
-                                                 ':' + pass + '@github.com/' + repo_owner + '/' + repo +
-                                                 '.git', function(returns) {
-                                        if (returns.error === true) {
-                                           res.status(400).send("Failed to run command on server");
-                                        } else {
-                                            res.sendStatus(0);
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            }
-        });
-    });
-
     router.post('/api/git/repo/create/project', function (req, res) {
         var project_name = req.body.params.project_name;
         if (!project_name) {
