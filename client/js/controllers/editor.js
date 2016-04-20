@@ -110,6 +110,7 @@
                         });
                         $scope.root = false;
                     } else {
+                        editor.getSession().setMode();
                         if (data.node.parent === "#") {
                             $scope.root = true;
                             $scope.setEditorContent('Please select a file to view its contents', previousContent, filePath);
