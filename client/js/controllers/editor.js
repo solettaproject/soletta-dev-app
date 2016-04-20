@@ -329,7 +329,7 @@
                                     "conf": conf
                                 }
                             }).success(function(data) {
-                                if (data == 0) {
+                                if (data) {
                                     $scope.openRunDialog();
                                 } else {
                                     alert("FBP Failed to run");
@@ -773,7 +773,7 @@
                         $scope.ServiceStatus = $scope.ServiceStatus.replace(/since.*;/,"");
 
                         if ($scope.ServiceStatus) {
-                            $scope.ServiceStatus = "FBP Running Status: " + $scope.ServiceStatus
+                            $scope.ServiceStatus = "FBP Running Status: " + $scope.ServiceStatus;
                         }
 
                     }).error(function(){

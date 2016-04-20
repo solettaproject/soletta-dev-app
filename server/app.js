@@ -31,7 +31,6 @@
         var app = express();
         var jConf;
         var args = process.argv.slice(2);
-        var server = process.argv.slice(1)[0];
         if (args.length === 0) {
             jConf = getConfigurationJson();
         } else {

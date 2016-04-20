@@ -96,7 +96,7 @@ module.exports = function () {
         fbp_path = array_path.join("/");
 
         return fbp_path + "/." + fbp_name;
-    }
+    };
 
     this.writeFile = function(path, body) {
         var fs = require('fs');
@@ -245,7 +245,7 @@ module.exports = function () {
                 return false;
             }
         }
-    }
+    };
 
     this.getServerName = function(repo_url) {
         var url_array = repo_url.split("/");

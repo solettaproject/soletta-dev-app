@@ -80,7 +80,7 @@
                 child.on('close', function(code) {
                     stdout = stdout.replace(/Active:/, '').trim();
                     if (runningFBPName) {
-                        stdout = runningFBPName + " - " + stdout
+                        stdout = runningFBPName + " - " + stdout;
                     }
                     res.send(stdout);
                 });
@@ -201,7 +201,7 @@
             var path = req.body.params.fbp_path;
             var code = req.body.params.code;
             var conf = req.body.params.conf;
-            if (!isInsideRepo(path) || !code) {
+            if (!path || !code) {
                 res.sendStatus(1);
             } else {
                 var child;
@@ -214,12 +214,12 @@
                     script = script + ' start ' + env_file(current_user(req)) + ' ' +  fbp_path;
                     if (conf) {
                         err = writeFile(env_file(current_user(req)),
-                                       'FBP_FILE="' + fbp_path + '"\n'
-                                     + 'SOL_FLOW_MODULE_RESOLVER_CONFFILE="' + conf + '"');
+                                       'FBP_FILE="' + fbp_path + '"\n' +
+                                       'SOL_FLOW_MODULE_RESOLVER_CONFFILE="' + conf + '"');
                     } else {
                         err = writeFile(env_file(current_user(req)),
-                                     'FBP_FILE="' + fbp_path + '"\n'
-                                     + 'SOL_FLOW_MODULE_RESOLVER_CONFFILE=""');
+                                     'FBP_FILE="' + fbp_path + '"\n' +
+                                     'SOL_FLOW_MODULE_RESOLVER_CONFFILE=""');
                     }
                     if (!err) {
                         getConfigureFile(current_user(req), conf, function (error) {
@@ -404,7 +404,7 @@
                 res.send(returns.message);
             }
         });
-    })
+    });
 
     router.post('/api/git/repo/create/folder', function (req, res) {
         var folder_path = req.body.params.folder_path;

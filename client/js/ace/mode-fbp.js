@@ -260,14 +260,14 @@ oop.inherits(FoldMode, BaseFoldMode);
         if (foldStyle === "markbegin")
             return;
 
-        var match = line.match(this.foldingStopMarker);
+        match = line.match(this.foldingStopMarker);
         if (match) {
-            var i = match.index + match[0].length;
+            var j = match.index + match[0].length;
 
             if (match[1])
-                return this.closingBracketBlock(session, match[1], row, i);
+                return this.closingBracketBlock(session, match[1], row, j);
 
-            return session.getCommentFoldRange(row, i, -1);
+            return session.getCommentFoldRange(row, j, -1);
         }
     };
 
@@ -351,8 +351,10 @@ var initContext = function(editor) {
         if (contextCache.rangeCount != editor.multiSelect.rangeCount)
             contextCache = {rangeCount: editor.multiSelect.rangeCount};
     }
-    if (contextCache[id])
-        return context = contextCache[id];
+    if (contextCache[id]) {
+        context = contextCache[id];
+        return context;
+    }
     context = contextCache[id] = {
         autoInsertedBrackets: 0,
         autoInsertedRow: -1,
@@ -418,18 +420,19 @@ var CstyleBehaviour = function() {
         } else if (text == "\n" || text == "\r\n") {
             initContext(editor);
             var closing = "";
+            var next_indent;
             if (CstyleBehaviour.isMaybeInsertedClosing(cursor, line)) {
                 closing = lang.stringRepeat("}", context.maybeInsertedBrackets);
                 CstyleBehaviour.clearMaybeInsertedClosing();
             }
-            var rightChar = line.substring(cursor.column, cursor.column + 1);
-            if (rightChar === '}') {
+            var rc = line.substring(cursor.column, cursor.column + 1);
+            if (rc === '}') {
                 var openBracePos = session.findMatchingBracket({row: cursor.row, column: cursor.column+1}, '}');
                 if (!openBracePos)
                      return null;
-                var next_indent = this.$getIndent(session.getLine(openBracePos.row));
+                next_indent = this.$getIndent(session.getLine(openBracePos.row));
             } else if (closing) {
-                var next_indent = this.$getIndent(line);
+                next_indent = this.$getIndent(line);
             } else {
                 CstyleBehaviour.clearMaybeInsertedClosing();
                 return;
@@ -741,11 +744,12 @@ oop.inherits(Mode, TextMode);
             return false;
 
         var tokens = this.getTokenizer().getLineTokens(line.trim(), state).tokens;
+        var last;
 
         if (!tokens)
             return false;
         do {
-            var last = tokens.pop();
+            last = tokens.pop();
         } while (last && (last.type == "comment" || (last.type == "text" && last.value.match(/^\s+$/))));
 
         if (!last)
