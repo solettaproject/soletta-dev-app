@@ -413,6 +413,31 @@
         }
     });
 
+    router.post('/api/git/repo/create/new/project', function (req, res) {
+        var project_name = req.body.params.project_name;
+        var file_name = req.body.params.file_name;
+        var code = req.body.params.file_code;
+        if (!project_name || !file_name || !code) {
+            res.status(400).send("Failed to get project, file name or code");
+        } else {
+            var project_path = home_dir(current_user(req)) + project_name;
+            var file_path = home_dir(current_user(req)) + project_name + "/" +
+                            file_name;
+            execOnServer('mkdir ' + home_dir(current_user(req)) + project_name,
+                         function(returns) {
+                if (returns.error === true) {
+                    res.status(400).send("Failed to run command on server");
+                } else {
+                    if(!writeFile(file_path, code)) {
+                        res.send(returns.message);
+                    } else {
+                        res.status(400).send("Failed to run command on server");
+                    }
+                }
+            });
+        }
+    });
+
     router.get('/api/configuration', function (req, res) {
         try {
             res.send(getConfigurationJson());
