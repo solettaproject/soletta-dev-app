@@ -256,7 +256,7 @@
         var path = req.query.fbp_path;
         var code = req.query.code;
         var conf = req.query.conf;
-        if (!isInsideRepo(path) || !code) {
+        if (!path || !code) {
             res.send("Error: FBP path or code is not valid");
         } else {
             var child;
