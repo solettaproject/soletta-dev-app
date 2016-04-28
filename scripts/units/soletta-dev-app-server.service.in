@@ -3,7 +3,7 @@ Description=Run Soletta Development Application server
 
 [Service]
 StandardOutput=null
-ExecStart=/usr/bin/NODE_BIN_NAME PATH/server/app.js 1> /dev/null 2>&1
+ExecStart=/usr/bin/NODE_BIN_NAME PATH/server/app.js
 Environment="NODE_ENV=production"
 
 [Install]
