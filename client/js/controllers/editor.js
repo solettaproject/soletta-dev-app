@@ -453,30 +453,37 @@
                       if ($scope.shouldSave) {
                           var file = filePath;
                           var body = editor.getSession().getValue();
-                          if (file && body) {
-                             $http.get('api/file/write',
-                                  {params: {
-                                      "file_path": file,
-                                      "file_body": body
-                                  }
-                             }).success(function(data) {
-                                $scope.shouldSave = false;
-                                //pop * from the string
-                                $scope.fileName = $scope.fileName.substring(0, $scope.fileName.length-1);
-                             }).error(function(){
-                                alert("Failed to save file on server. Try again.");
-                                $scope.shouldSave = true;
-                             });
+                          if (filePath === "/tmp/cached.fbp") {
+                            $scope.createProjectFromScratch();
                           } else {
-                             alert("Something went terrbile wrong.\nFailed to save file on server. Try again.");
+                              if (file && body) {
+                                 $http.get('api/file/write',
+                                      {params: {
+                                              "file_path": file,
+                                          "file_body": body
+                                      }
+                                 }).success(function(data) {
+                                    $scope.shouldSave = false;
+                                    //pop * from the string
+                                    if ($scope.fileName) {
+                                            $scope.fileName = $scope.fileName.substring(0, $scope.fileName.length-1);
+                                    }
+                                 }).error(function(){
+                                    alert("Failed to save file on server. Try again.");
+                                    $scope.shouldSave = true;
+                                 });
+                              } else {
+                                 alert("Something went terrbile wrong.\nFailed to save file on server. Try again.");
+                              }
                           }
                       }
                   };
 
                 editor.keyBinding.onCommandKey = function(e, hashId, keyCode) {
-                    if ($scope.shouldSave === false && $scope.fileName &&
-                        $scope.folder !== "demo") {
-                        $scope.fileName = $scope.fileName + "*";
+                    if ($scope.shouldSave === false && $scope.folder !== "demo") {
+                        if ($scope.fileName) {
+                            $scope.fileName = $scope.fileName + "*";
+                        }
                         $scope.shouldSave = true;
                     }
                     this.origOnCommandKey(e, hashId, keyCode);
@@ -520,6 +527,67 @@
                     dialog.dialog("open");
 
                 }
+
+                $scope.createProjectFromScratch = function () {
+                    var dialog = $('<div></div>').
+                                 html($compile('<div>Project name <input class="inputControls"' +
+                                               ' type="text" style="width: 256px; outline: 0;"' +
+                                               ' ng-model="prj_name" /></div>' +
+                                               '<br><div> File name <input class="inputControls"' +
+                                               ' type="text" style="width: 256px; outline: 0;"' +
+                                               ' ng-model="file_name" /></div>')($scope)).
+                    dialog({
+                        title: "Choose the name of the project",
+                        autoOpen: false,
+                        modal: true,
+                        position: { at: "center top"},
+                        height: 270,
+                        width: 300,
+                        show: { effect: "fade", duration: 300 },
+                        hide: {effect: "fade", duration: 300 },
+                        resizable: 'disable',
+                        closeOnEscape: false,
+                        open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
+                        buttons: {
+                            "Create": function() {
+                                if ($scope.prj_name && $scope.file_name) {
+                                    $(".ui-dialog-buttonpane button:contains('Close')").button("disable");
+                                    $(".ui-dialog-buttonpane button:contains('Create')").button("disable");
+                                    var body = editor.getSession().getValue();
+                                    console.log(body);
+                                    $http.post('/api/git/repo/create/new/project',
+                                    {
+                                        params: {
+                                            "project_name": $scope.prj_name,
+                                            "file_name": $scope.file_name,
+                                            "file_code": body
+                                        }
+                                    }).success(function(data) {
+                                        $scope.refreshTree();
+                                        $scope.shouldSave = false;
+                                        editor.getSession().setValue("");
+                                        $(".ui-dialog-buttonpane button:contains('Close')").button("enable");
+                                        $(".ui-dialog-buttonpane button:contains('Create')").button("enable");
+                                        $(this).dialog("close");
+                                    }).error(function(data) {
+                                        alert("Failed to create project aborting. Reason: " + data);
+                                        $(".ui-dialog-buttonpane button:contains('Close')").button("enable");
+                                        $(".ui-dialog-buttonpane button:contains('Create')").button("enable");
+                                    });
+                                } else {
+                                    alert("Invalid project or file name.");
+                                }
+                            },
+                            Close: function() {
+                                $(this).dialog("close");
+                                }
+                            },
+                            close: function(ev, ui){
+                                $(this).dialog("close");
+                            }
+                    });
+                    dialog.dialog("open");
+                };
 
                 $scope.createProject = function () {
                     var dialog = $('<div></div>').
