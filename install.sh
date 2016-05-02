@@ -65,8 +65,8 @@ else
     NODE_BIN_NAME="node"
 fi
 
-test_dep "sol-fbp-runner" 1
-if [ $RETVAL -eq 1 ]; then
+FBP_RUNNER_PATH=$(which sol-fbp-runner)
+if [ -z "$FBP_RUNNER_PATH" ]; then
     print_need_dep "soletta"
     echo "To install soletta: https://github.com/solettaproject/soletta/wiki#packages"
     exit 1
@@ -103,7 +103,8 @@ fi
 su -c "cp $SERVER_PATH/scripts/units/fbp-runner@.service $SYSTEMD_SERVICE_PATH/ &&
        cp $SERVER_PATH/scripts/units/soletta-dev-app-server.service.in $SYSTEMD_SERVICE_PATH/soletta-dev-app-server.service &&
        sed -i "s@PATH@"$SERVER_PATH"@" $SYSTEMD_SERVICE_PATH/soletta-dev-app-server.service &&
-       sed -i "s@"NODE_BIN_NAME"@"$NODE_BIN_NAME"@" $SYSTEMD_SERVICE_PATH/soletta-dev-app-server.service"
+       sed -i "s@"NODE_BIN_NAME"@"$NODE_BIN_NAME"@" $SYSTEMD_SERVICE_PATH/soletta-dev-app-server.service &&
+       sed -i "s@"/usr/bin/sol-fbp-runner"@"$FBP_RUNNER_PATH"@" $SYSTEMD_SERVICE_PATH/fbp-runner@.service"
 systemctl daemon-reload
 echo "to start server run:"
 echo "systemctl start soletta-dev-app-server"
