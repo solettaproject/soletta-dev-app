@@ -72,6 +72,13 @@ if [ -z "$FBP_RUNNER_PATH" ]; then
     exit 1
 fi
 
+FBP_DOT=$(which sol-fbp-to-dot)
+test_dep "sol-fbp-to-dot" 1
+if [ $RETVAL -eq 1 ]; then
+    echo "Recompile soletta with FBP_TO_DOT support"
+    exit 1
+fi
+
 test_dep "dot" 0 "graphviz"
 
 test_dep "npm" 0 "npm"
