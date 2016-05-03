@@ -55,6 +55,8 @@
                 $scope.logged = false;
                 $scope.fbpType = true;
                 $scope.isServiceRunning = false;
+                $scope.isServiceRunningReturn = false;
+                $scope.isJournaldReturn = false;
                 var editor = ace.edit("fbp_editor");
                 var Range = require('ace/range').Range;
                 var aceConfig = require("ace/config");
@@ -291,16 +293,21 @@
                 };
 
                 $scope.getOutput = function () {
-                    $http.get('/api/journald',
-                    {
-                        params: {
-                            "unit_path": "fbp-runner@",
-                        }
-                    }).success(function(data) {
-                        $scope.RunViewer = data;
-                    }).error(function(){
-                        $scope.RunViewer = "Erro getting systemd journald";
-                    });
+                    if ($scope.isJournaldReturn === false) {
+                        $scope.isJournaldReturn = true;
+                        $http.get('/api/journald',
+                        {
+                            params: {
+                                "unit_path": "fbp-runner@",
+                                }
+                        }).success(function(data) {
+                            $scope.RunViewer = data;
+                            $scope.isJournaldReturn = false;
+                        }).error(function(){
+                            $scope.RunViewer = "Erro getting systemd journald";
+                            $scope.isJournaldReturn = false;
+                        });
+                    }
                 };
 
                 $scope.run = function() {
@@ -834,26 +841,31 @@
                 };
 
                 $scope.getServiceStatus = function () {
-                    $http.get('/api/service/status',
-                    {
-                        params: { "service": "fbp-runner.service"}
-                    }).success(function(data) {
-                        $scope.ServiceStatus = data.trim();
-                        if ($scope.ServiceStatus.indexOf("active (running)") > -1) {
-                            $scope.isServiceRunning = true;
-                        } else {
-                            $scope.isServiceRunning = false;
-                        }
+                    if ($scope.isServiceRunningReturn === false) {
+                        $scope.isServiceRunningReturn = true;
+                        $http.get('/api/service/status',
+                        {
+                            params: { "service": "fbp-runner.service"}
+                        }).success(function(data) {
+                            $scope.isServiceRunningReturn = false;
+                            $scope.ServiceStatus = data.trim();
+                            if ($scope.ServiceStatus.indexOf("active (running)") > -1) {
+                                $scope.isServiceRunning = true;
+                            } else {
+                                $scope.isServiceRunning = false;
+                            }
 
-                        $scope.ServiceStatus = $scope.ServiceStatus.replace(/since.*;/,"");
+                            $scope.ServiceStatus = $scope.ServiceStatus.replace(/since.*;/,"");
 
-                        if ($scope.ServiceStatus) {
-                            $scope.ServiceStatus = "FBP Running Status: " + $scope.ServiceStatus;
-                        }
+                            if ($scope.ServiceStatus) {
+                                $scope.ServiceStatus = "FBP Running Status: " + $scope.ServiceStatus;
+                            }
 
-                    }).error(function(){
-                        $scope.ServiceStatus = "Failed to get service information";
-                    });
+                        }).error(function(){
+                            $scope.isServiceRunningReturn = false;
+                            $scope.ServiceStatus = "Failed to get service information";
+                        });
+                    }
                     $scope.startServiceStatus();
                 };
 
