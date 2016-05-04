@@ -298,7 +298,7 @@
                         $http.get('/api/journald',
                         {
                             params: {
-                                "unit_path": "fbp-runner@",
+                                "unit_name": "fbp-runner@",
                                 }
                         }).success(function(data) {
                             $scope.RunViewer = data;
