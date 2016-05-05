@@ -29,6 +29,7 @@
                 var schemaDiag;
                 var filePath;
                 var isLeaf;
+                $scope.clearTimeStamp = 0;
                 $scope.clipboard = "";
                 $scope.syntaxCheckRefreshPeriod = 1100;
                 $scope.runConf = false;
@@ -277,6 +278,11 @@
                                 resizable: 'disable',
                                 scrollable: 'disable',
                                 buttons: {
+                                    Clear: function () {
+                                        var len = $scope.RunViewer.length -1;
+                                        $scope.clearTimeStamp = $scope.RunViewer[len].__REALTIME_TIMESTAMP;
+                                        $scope.RunViewer = [];
+                                    },
                                     Close: function() {
                                         $interval.cancel(promiseRunViewer);
                                         $(this).dialog("close");
@@ -301,7 +307,17 @@
                                 "unit_name": "fbp-runner@",
                                 }
                         }).success(function(data) {
-                            $scope.RunViewer = data;
+                            if ($scope.clearTimeStamp === 0) {
+                                $scope.RunViewer = data;
+                            } else {
+                                var array = [];
+                                for(var i in data){
+                                    if (data[i].__REALTIME_TIMESTAMP > $scope.clearTimeStamp) {
+                                        array.push(data[i]);
+                                    }
+                                }
+                                $scope.RunViewer = array;
+                            }
                             $scope.isJournaldReturn = false;
                         }).error(function(){
                             $scope.RunViewer = "Erro getting systemd journald";
@@ -925,7 +941,6 @@
                             break;
                         case "edit.copy":
                             $scope.clipboard = editor.getCopyText();
-                            console.log($scope.clipboard);
                             break;
                         case "edit.paste":
                             editor.insert($scope.clipboard, true);
