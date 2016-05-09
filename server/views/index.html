@@ -50,17 +50,42 @@
                 var currentMenu = $('#menu-cb');
                 var bottomMargin = 220;
 
+                function hide(id) {
+                    id.css("visibility", "hidden");
+                    id.css("position", "absolute");
+                    id.css("top", "-9999px");
+                    id.css("left", "-9999px");
+                    id.css("width", "0%");
+                    id.css("height", "0%");
+
+                }
+
+                function show(id) {
+                    id.css("visibility", "visible");
+                    id.css("position", "fixed");
+                    id.css("left", "0px");
+                    id.css("top", "auto");
+                    id.css("width", "100%");
+                    id.css("height", "90%");
+                }
+
                 //initial setup
                 $('#sj').hide();
                 $('#fe').hide();
-                $('#sc').hide();
+                hide($('#sc'));
+
                 currentMenu.addClass('menu-item-selected');
 
                 //Handling the menu clicks
                 $('.menu-item').on('click',function(event){
 
                     //clearing old references
-                    currentContent.hide();
+                    if (currentContent.attr("id") === "sc") {
+                        hide(currentContent);
+                    } else {
+                        currentContent.hide();
+                    }
+
                     currentMenu.removeClass('menu-item-selected');
 
                     //assigning new menu and content
@@ -68,7 +93,12 @@
                     currentContent = $('#' + (currentMenu).attr('id').substr(5));
 
                     currentMenu.addClass('menu-item-selected');
-                    currentContent.show();
+                    console.log(currentContent);
+                    if (currentContent.attr("id") === "sc") {
+                        show(currentContent);
+                    } else {
+                        currentContent.show();
+                    }
 
                 });
 
