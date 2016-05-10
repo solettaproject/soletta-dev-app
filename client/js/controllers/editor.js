@@ -99,6 +99,7 @@
                             editor.session.setMode(mode);
                             var type_file = _l.base.slice(-3);
                             if (type_file === "fbp") {
+                                $("#svgFrame").empty();
                                 $scope.fbpType = true;
                                 aceConfig.set("modePath", "js/ace/");
                                 editor.getSession().setMode("ace/mode/fbp");
