@@ -209,6 +209,7 @@
                                 if(close_id) {
                                     $scope.saveFile(savePath, previousContent);
                                     editor.getSession().setValue(content);
+                                    $scope.refreshTree();
                                 } else {
                                     editor.getSession().setValue(content);
                                 }
@@ -500,6 +501,7 @@
                                     //pop * from the string
                                     if ($scope.fileName) {
                                             $scope.fileName = $scope.fileName.substring(0, $scope.fileName.length-1);
+                                            $scope.refreshTree();
                                     }
                                  }).error(function(){
                                     alert("Failed to save file on server. Try again.");
