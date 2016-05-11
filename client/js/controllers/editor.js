@@ -36,6 +36,7 @@
                 $scope.loginConf = false;
                 $scope.runJournal = false;
                 $scope.shouldSave = false;
+                $scope.runningStartStop = false;
                 svConf.fetchConf().success(function(data){
                     $scope.runConf = data.run_fbp_access;
                     $scope.loginConf = data.login_system;
@@ -328,40 +329,48 @@
                 };
 
                 $scope.run = function() {
-                    if ($scope.isServiceRunning) {
-                        //Post stop service
-                        $http.post('/api/fbp/stop').success(function(data) {
-                                if (data == 1) {
-                                   alert("FBP Service failed to stop");
-                                }
-                         });
-                    } else if ($scope.fbpType === true) {
-                        var fbpCode = editor.getSession().getValue();
-                        var fbpName = $scope.fileName;
-                        $scope.newFile = true;
-                        var conf = $scope.selectConfigPath;
-                        if (conf === "none") {
-                            conf = null;
-                        }
-                        if (!filePath) {
-                            filePath = "/tmp/cached.fbp";
-                        }
-                        $http.post('/api/fbp/run',
-                                {params: {
-                                    "fbp_name": fbpName,
-                                    "fbp_path": filePath,
-                                    "code": fbpCode,
-                                    "conf": conf
-                                }
+                    if (!$scope.runningStartStop) {
+                        if ($scope.isServiceRunning) {
+                            //Post stop service
+                            $scope.runningStartStop = true;
+                            $http.post('/api/fbp/stop').success(function(data) {
+                                    if (data == 1) {
+                                       alert("FBP Service failed to stop");
+                                    }
+                            }).error(function(){
+                                $scope.runningStartStop = false;
+                            });
+                        } else if ($scope.fbpType === true) {
+                            $scope.runningStartStop = true;
+                            var fbpCode = editor.getSession().getValue();
+                            var fbpName = $scope.fileName;
+                            $scope.newFile = true;
+                            var conf = $scope.selectConfigPath;
+                            if (conf === "none") {
+                                conf = null;
+                            }
+                            if (!filePath) {
+                                filePath = "/tmp/cached.fbp";
+                            }
+                            $http.post('/api/fbp/run',
+                                    {params: {
+                                        "fbp_name": fbpName,
+                                        "fbp_path": filePath,
+                                        "code": fbpCode,
+                                        "conf": conf
+                                    }
                             }).success(function(data) {
                                 if (data) {
                                     $scope.openRunDialog();
                                 } else {
                                     alert("FBP Failed to run");
                                 }
+                                $scope.runningStartStop = false;
                             }).error(function(){
                                 $scope.openRunDialog();
+                                $scope.runningStartStop = false;
                             });
+                        }
                     }
                 };
 
@@ -902,13 +911,17 @@
                     if (!$scope.runConf) {
                         return "disable_div";
                     } else {
-                        if ($scope.isServiceRunning) {
-                            return "button_stop";
+                        if ($scope.runningStartStop) {
+                            return "button_loading";
                         } else {
-                            if ($scope.fbpType === true) {
-                                return "button_run_on";
+                            if ($scope.isServiceRunning) {
+                                return "button_stop";
                             } else {
-                                return "button_run_off";
+                                if ($scope.fbpType === true) {
+                                    return "button_run_on";
+                                } else {
+                                    return "button_run_off";
+                                }
                             }
                         }
                     }
