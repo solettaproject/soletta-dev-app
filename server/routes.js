@@ -218,8 +218,7 @@
                                        'SOL_FLOW_MODULE_RESOLVER_CONFFILE="' + conf + '"');
                     } else {
                         err = writeFile(env_file(current_user(req)),
-                                     'FBP_FILE="' + fbp_path + '"\n' +
-                                     'SOL_FLOW_MODULE_RESOLVER_CONFFILE=""');
+                                     'FBP_FILE="' + fbp_path + '"\n');
                     }
                     if (!err) {
                         getConfigureFile(current_user(req), conf, function (error) {
