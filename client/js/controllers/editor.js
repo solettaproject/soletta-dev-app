@@ -151,6 +151,8 @@
                                 // This function will run when the image is not found
                                 $scope.schemaOn = false;
                             });
+                    } else {
+                        $scope.schemaOn = false;
                     }
                 }
 
@@ -184,7 +186,7 @@
                               modal: true,
                               position: { at: "center top"},
                               height: 600,
-                              width: '75%',
+                              width: '900',
                               show: { effect: "fade", duration: 300 },
                               hide: {effect: "fade", duration: 300 },
                               resize: 'disable',

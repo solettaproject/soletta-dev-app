@@ -319,6 +319,23 @@ iframe{
     margin-left: 5px;
 }
 
+.button_schema_on {
+    background:url(../imgs/button_schema.png);
+    background-repeat: no-repeat;
+    z-index: 30;
+    position: absolute;
+    top: 186px;
+    right: 17px;
+    width:120px;
+    height:32px;
+    outline: 0;
+}
+
+.button_schema_on:hover {
+    background:url(../imgs/button_schema_hover.png);
+    background-repeat: no-repeat;
+}
+
 .spin_sync {
     position: relative;
     bottom: -17;
