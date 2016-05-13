@@ -27,7 +27,7 @@ var functions = {
     *
     * @param path: string
     *
-    * @return BOOLEAN: true - Path is setted
+    * @return BOOLEAN: true - Path is set
     *                  false - Something went wrong
     */
     setNodeTypesPath: function (path) {

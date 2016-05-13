@@ -44,7 +44,7 @@ var ShHighlightRules = function() {
         "keyword": reservedKeywords,
         "support.function.builtin": languageConstructs,
         "invalid.deprecated": "debugger",
-        "paramters": "param"
+        "parameters": "param"
     }, "identifier");
 
     var integer = "(?:(?:[1-9]\\d*)|(?:0))";
