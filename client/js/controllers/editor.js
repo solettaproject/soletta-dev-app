@@ -561,6 +561,12 @@
                                 $(this).dialog("close");
                             }
                         });
+                    dialog.keypress(function(e) {
+                        if (e.keyCode === $.ui.keyCode.ENTER) {
+                            callback(true);
+                            $(this).dialog("close");
+                        }
+                    });
                     dialog.dialog("open");
 
                 }
@@ -570,7 +576,7 @@
                                  html($compile('<div>Project name <input class="inputControls"' +
                                                ' type="text" style="width: 256px; outline: 0;"' +
                                                ' ng-model="prj_name" /></div>' +
-                                               '<br><div> File name <input class="inputControls"' +
+                                               '<br><div> FBP file name <input class="inputControls"' +
                                                ' type="text" style="width: 256px; outline: 0;"' +
                                                ' ng-model="file_name" /></div>')($scope)).
                     dialog({
@@ -584,23 +590,39 @@
                         hide: {effect: "fade", duration: 300 },
                         resizable: 'disable',
                         closeOnEscape: false,
-                        open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
+                        open: function(event, ui) {
+                            $(".ui-dialog-titlebar-close").hide();
+                            dialog.keyup(function(e) {
+                                if (e.keyCode === $.ui.keyCode.ENTER) {
+                                    $(".ui-dialog-buttonpane button:contains('Create')").click();
+                                }
+                            });
+                        },
                         buttons: {
                             "Create": function() {
                                 if ($scope.prj_name && $scope.file_name) {
                                     $(".ui-dialog-buttonpane button:contains('Close')").button("disable");
                                     $(".ui-dialog-buttonpane button:contains('Create')").button("disable");
-                                    var body = editor.getSession().getValue();
+                                    var body;
+                                    if (filePath) {
+                                        body = editor.getSession().getValue();
+                                    }
+                                    console.log(filePath);
+                                    console.log(body);
+                                    var fbp_name = $scope.file_name;
+                                    if (fbp_name.substr(fbp_name.length - 4) !== ".fbp") {
+                                        fbp_name = fbp_name + ".fbp";
+                                    }
                                     $http.post('/api/git/repo/create/new/project',
                                     {
                                         params: {
                                             "project_name": $scope.prj_name,
-                                            "file_name": $scope.file_name,
+                                            "file_name": fbp_name,
                                             "file_code": body
                                         }
                                     }).success(function(data) {
                                         var repo_data = data;
-                                        var file_data = data + "/" + $scope.file_name;
+                                        var file_data = data + "/" + fbp_name;
                                         var t = $("#jstree").jstree(true);
                                         $("#jstree").one("refresh.jstree", function () {
                                             $("#jstree").one("open_node.jstree", function () {
@@ -633,52 +655,6 @@
                     dialog.dialog("open");
                 };
 
-                $scope.createProject = function () {
-                    var dialog = $('<div></div>').
-                                 html($compile('<input class="inputControls"' +
-                                               ' type="text" style="width: 256px; outline: 0;"' +
-                                               ' ng-model="prj_name" />')($scope)).
-                    dialog({
-                        title: "Choose the name of the project",
-                        autoOpen: false,
-                        modal: true,
-                        position: { at: "center top"},
-                        height: 167,
-                        width: 300,
-                        show: { effect: "fade", duration: 300 },
-                        hide: {effect: "fade", duration: 300 },
-                        resizable: 'disable',
-                        buttons: {
-                            "Create": function() {
-                                var name = "/" + $scope.prj_name;
-                                if (name) {
-                                    $http.post('/api/git/repo/create/project',
-                                    {
-                                        params: {
-                                            "project_name": name
-                                        }
-                                    }).success(function(data) {
-                                        $scope.refreshTree();
-                                    }).error(function(){
-                                        alert("Oh uh, something went wrong. Try again");
-                                    });
-                                } else {
-                                    alert("Oh uh, something went wrong. Try again");
-                                }
-                                $(this).dialog("close");
-                            },
-                            Cancel: function() {
-                                $(this).dialog("close");
-                                }
-                            },
-                            close: function(ev, ui){
-                                $(this).dialog("close");
-                            }
-                    });
-                    dialog.dialog("open");
-
-                };
-
                 $scope.importGITProject = function () {
                     var dialog = $('<div id="importGITDialog"></div>').
                                  html($compile('<div class="spin_sync" style="margin-top: -9px; float: right; margin-right: 46px;"' +
@@ -695,7 +671,15 @@
                         height: 170,
                         width: 520,
                         closeOnEscape: false,
-                        open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
+                        open: function(event, ui) {
+                            $(".ui-dialog-titlebar-close").hide();
+                            dialog.keyup(function(e) {
+                                if (e.keyCode === $.ui.keyCode.ENTER) {
+                                    console.log("Import");
+                                    $(".ui-dialog-buttonpane button:contains('Import')").click();
+                                }
+                            });
+                        },
                         show: { effect: "fade", duration: 300 },
                         hide: {effect: "fade", duration: 300 },
                         resizable: 'disable',
@@ -750,6 +734,14 @@
                         show: { effect: "fade", duration: 300 },
                         hide: {effect: "fade", duration: 300 },
                         resizable: 'disable',
+                        open: function(event, ui) {
+                            dialog.keyup(function(e) {
+                                if (e.keyCode === $.ui.keyCode.ENTER) {
+                                    console.log("Import");
+                                    $(".ui-dialog-buttonpane button:contains('Create')").click();
+                                }
+                            });
+                        },
                         buttons: {
                             "Create": function() {
                                 var name = "/" + $scope.folder_name;
@@ -802,6 +794,14 @@
                           show: { effect: "fade", duration: 300 },
                           hide: {effect: "fade", duration: 300 },
                           resizable: 'disable',
+                          open: function(event, ui) {
+                            dialog.keyup(function(e) {
+                                if (e.keyCode === $.ui.keyCode.ENTER) {
+                                    console.log("Import");
+                                    $(".ui-dialog-buttonpane button:contains('Create')").click();
+                                }
+                            });
+                          },
                           buttons: {
                               "Create": function() {
                                   var name = "/" + $scope.file_name;
@@ -934,7 +934,7 @@
                 this.menuAction = function(name, ev) {
                     switch(name) {
                         case "file.projectnew":
-                            $scope.createProject();
+                            $scope.createProjectFromScratch();
                             break;
                         case "file.folder":
                             $scope.newFolder();
