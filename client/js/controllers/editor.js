@@ -607,8 +607,6 @@
                                     if (filePath) {
                                         body = editor.getSession().getValue();
                                     }
-                                    console.log(filePath);
-                                    console.log(body);
                                     var fbp_name = $scope.file_name;
                                     if (fbp_name.substr(fbp_name.length - 4) !== ".fbp") {
                                         fbp_name = fbp_name + ".fbp";
@@ -675,7 +673,6 @@
                             $(".ui-dialog-titlebar-close").hide();
                             dialog.keyup(function(e) {
                                 if (e.keyCode === $.ui.keyCode.ENTER) {
-                                    console.log("Import");
                                     $(".ui-dialog-buttonpane button:contains('Import')").click();
                                 }
                             });
@@ -737,7 +734,6 @@
                         open: function(event, ui) {
                             dialog.keyup(function(e) {
                                 if (e.keyCode === $.ui.keyCode.ENTER) {
-                                    console.log("Import");
                                     $(".ui-dialog-buttonpane button:contains('Create')").click();
                                 }
                             });
@@ -797,7 +793,6 @@
                           open: function(event, ui) {
                             dialog.keyup(function(e) {
                                 if (e.keyCode === $.ui.keyCode.ENTER) {
-                                    console.log("Import");
                                     $(".ui-dialog-buttonpane button:contains('Create')").click();
                                 }
                             });
