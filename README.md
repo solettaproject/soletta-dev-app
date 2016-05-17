@@ -18,6 +18,15 @@ It enables adding smartness even on the smallest edge devices.
 If you have any question or want to propose any a change contact the soletta
 project on github: https://github.com/solettaproject/.
 
+## Web-browser compatibility
+
+Soletta Dev-App is compatible with:
+
+  - Google Chrome
+  - Mozilla FireFox
+  - Opera
+
+
 ## Depedencies
  - *soletta*
  - *nodejs*
