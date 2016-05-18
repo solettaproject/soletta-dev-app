@@ -222,7 +222,7 @@
                     }
                     if (!err) {
                         getConfigureFile(current_user(req), conf, function (error) {
-                            child = exec("sh " + script);
+                            child = exec("bash " + script);
                             child.stdout.on('data', function(data) {
                                 stdout += data;
                                 console.log('stdout: ' + data);
@@ -447,7 +447,7 @@
             var child;
             var script = scripts_dir() + "/fbp-runner.sh";
             script = script + ' stop ' + env_file(current_user(req));
-            child = exec("sh " + script);
+            child = exec("bash " + script);
             child.on('close', function(code) {
                 console.log('closing code: ' + code);
                 res.sendStatus(code);
