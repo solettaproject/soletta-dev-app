@@ -15,8 +15,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-export SOL_LOG_PRINT_FUNCTION="journal"
-
 SCRIPT="$3"
 ENV_PATH="$2"
 SERVICE="fbp-runner@"$(systemd-escape $ENV_PATH)
