@@ -19,9 +19,10 @@ SCRIPT="$3"
 ENV_PATH="$2"
 SERVICE="fbp-runner@"$(systemd-escape $ENV_PATH)
 
-systemctl stop $SERVICE
+if [ $1 == "stop" ]; then
+	systemctl stop $SERVICE
 
-if [ $1 == "start" ]; then
+elif [ $1 == "start" ] || [ $1 == "restart" ]; then
     syntax=`sol-fbp-runner -c $SCRIPT | grep OK`
     systemctl $1 $SERVICE
     if [ -n "$syntax" ]; then
@@ -29,11 +30,11 @@ if [ $1 == "start" ]; then
     else
         exit 1
     fi
+fi
+
+st=`systemctl status $SERVICE | grep "Active:"`
+if [ -z "$st" ]; then
+	exit 0
 else
-    st=`systemctl status $SERVICE | grep "Active:"`
-    if [ -z "$st" ]; then
-        exit 0
-    else
-        exit 1
-    fi
+	exit 1
 fi

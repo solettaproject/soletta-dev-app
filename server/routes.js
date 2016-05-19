@@ -211,7 +211,7 @@
                 var fbp_path = generateHiddenPath(path);
                 if (fbp_path) {
                     err = writeFile(fbp_path, code);
-                    script = script + ' start ' + env_file(current_user(req)) + ' ' +  fbp_path;
+                    script = script + ' restart ' + env_file(current_user(req)) + ' ' +  fbp_path;
                     if (conf) {
                         err = writeFile(env_file(current_user(req)),
                                        'FBP_FILE="' + fbp_path + '"\n' +
