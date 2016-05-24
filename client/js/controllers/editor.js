@@ -831,6 +831,77 @@
                     }
                 };
 
+             $scope.filesChanged = function(elm){
+                    $scope.files = elm.files
+                    $scope.$apply();
+             }
+
+             $scope.importFile = function () {
+                    var file = filePath;
+                    if (file) {
+                        if (isLeaf) {
+                            var cached = file.split("/");
+                            cached.pop();
+                            file = cached.join("/");
+                        }
+                        var entity = file.split('/');
+                        for(var i=0; i < entity.length; i++){
+                            var test = entity[i] === 'demo';
+                        }
+                        if(!test){
+                        var dialog = $('<div></div>').
+                                html($compile('<form ng-submit="Upload()"> <input' +
+                                            ' type="file" class="inputControls"' +
+                                            ' multiple onChange="angular.element(this).scope().filesChanged(this)"/>'+
+                                            '</form>')($scope)).
+                        dialog({
+                          title: "Choose file to import",
+                          autoOpen: false,
+                          modal: true,
+                          position: { at: "center top"},
+                          height: 225,
+                          width: 300,
+                          show: { effect: "fade", duration: 300 },
+                          hide: {effect: "fade", duration: 300 },
+                          resizable: 'disable',
+                          buttons: {
+                              "Upload": function(){
+                                var formdata = new FormData();
+                                var data=String(file);
+                                formdata.append("upload_path", data);
+                                angular.forEach($scope.files,function(file){
+                                formdata.append('file',file)
+                                });
+                                $http.post('/api/file/upload',formdata,
+                                {
+                                    transformRequest: angular.identity,
+                                    headers:{'Content-Type':undefined}
+                                })
+                                    .success(function(d){
+                                        console.log(d)
+                                        $scope.refreshTree();                                        
+                                    });
+                                    $(this).dialog("close");
+                              },
+                              Cancel: function() {
+                                  $(this).dialog("close");
+                                  }
+                              },
+                              close: function(ev, ui){
+                                  $(this).dialog("close");
+                              }
+                      });
+                      dialog.dialog("open");
+                        }else{
+                            console.log("Error: Upload to demo folder not allowed");
+                            alert("Error: Upload to demo folder Forbidden!")
+                        }
+                    } else {
+                        console.log("Error: repository not selected");
+                        alert("Folder destination must be selected!");
+                    }
+                };
+
                 $scope.remove = function () {
                     if (filePath) {
                         var file_name = filePath.split("/").pop();
@@ -942,6 +1013,9 @@
                             break;
                         case "file.remove":
                             $scope.remove();
+                            break;
+                        case "file.importfile":
+                            $scope.importFile();
                             break;
                         case "file.import":
                             $scope.importGITProject();

@@ -15,7 +15,8 @@
     "morgan": "^1.5.3",
     "node-uuid": "^1.4.3",
     "octonode": "^0.7.1",
-    "session-file-store": "0.2.0"
+    "session-file-store": "0.2.0",
+    "multer": "1.1.0"
   },
   "scripts": {
     "test": "protractor protractor.config.js"
