@@ -831,6 +831,64 @@
                     }
                 };
 
+             $scope.importFile = function () {
+                    var file = filePath;
+                    if (file) {
+                        if (isLeaf) {
+                            var cached = file.split("/");
+                            cached.pop();
+                            file = cached.join("/");
+                        }
+                        var dialog = $('<div></div>').
+                                   html($compile('<form ng-controller="editor"> <input' +
+                                                 ' type="file" class="inputControls"' +
+                                                 ' multiple onChange="angular.element(this).scope().filesChanged(this)"/> <input type="button" class="inputControls" ng-click="uploadFiles()" value="Upload" /><li ng-repeat="file in files">{{file.name}}</li></form>')($scope)).
+                        dialog({
+                          title: "Choose file to import",
+                          autoOpen: false,
+                          modal: true,
+                          position: { at: "center top"},
+                          height: 167,
+                          width: 300,
+                          show: { effect: "fade", duration: 300 },
+                          hide: {effect: "fade", duration: 300 },
+                          resizable: 'disable',
+                          buttons: {
+                              Cancel: function() {
+                                  $(this).dialog("close");
+                                  }
+                              },
+                              close: function(ev, ui){
+                                  $(this).dialog("close");
+                              }
+                      });
+                      dialog.dialog("open");
+                    } else {
+                        console.log("Error: repository not selected");
+                        alert("Folder destination must be selected!");
+                    }
+                };
+
+                $scope.filesChanged = function(elm){
+                    $scope.files = elm.files
+                    $scope.$apply();
+                }
+
+                $scope.uploadFiles = function() {
+                    var formdata = new FormData();
+                    angular.forEach($scope.files,function(file){
+                        formdata.append('file',file)
+                    })
+                    $http.post('/api/git/repo/upload',formdata,
+                    {
+                        transformRequest:angular.identity,
+                        headers:{'Content-Type':undefined}
+                    })
+                    .success(function(d){
+                        console.log(d)
+                    });
+                };
+
                 $scope.remove = function () {
                     if (filePath) {
                         var file_name = filePath.split("/").pop();
@@ -942,6 +1000,9 @@
                             break;
                         case "file.remove":
                             $scope.remove();
+                            break;
+                        case "file.importfile":
+                            $scope.importFile();
                             break;
                         case "file.import":
                             $scope.importGITProject();
