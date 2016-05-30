@@ -20,6 +20,7 @@
     var router = express.Router();
     var fs = require('fs');
     var path = require('path');
+    var multer = require('multer');
     /* Custom modules */
     require('./tools.js')();
     require('./configuration.js')();
@@ -376,6 +377,29 @@
         } else {
             res.status(400).send("Error: file path is not valid.");
         }
+    });
+
+    var storage = multer.diskStorage({
+        destination: function (req,file, callback){
+            callback(null, String(req.body.upload_path)) 
+        },
+        filename: function(req,file,callback){
+            callback(null, file.originalname)
+        }
+    });
+
+    var upload = multer({storage: storage }).array('file',3);
+
+    router.post('/api/file/upload', function(req,res){
+        upload(req,res,function(err){
+            if(err){
+                res.send("File Upload Failed!");
+                return;
+            }
+            else{
+                res.send("File Uploaded Successfully!");
+            }
+        })  
     });
 
     router.post('/api/git/repo/delete/file', function (req, res) {
