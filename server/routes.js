@@ -379,6 +379,20 @@
         }
     });
 
+    router.post('/api/file/upload', function(req, res) {
+        upload(req, res, function(err) {
+            if(req.hasOwnProperty('file')) {
+                if (err) {
+                    return res.status(400).send('File Upload Failed: ' + err);
+                } else {
+                    return res.sendStatus(0);
+                }
+            } else {
+                return res.status(400).send('Error: Form cannot be empty');
+            }  
+        })  
+    });
+
     router.post('/api/git/repo/delete/file', function (req, res) {
         var file_path = req.body.params.file_path;
         if (!file_path) {
