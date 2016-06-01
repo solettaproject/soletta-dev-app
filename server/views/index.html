@@ -191,6 +191,11 @@
                                         New File
                                     </md-button>
                                  </md-menu-item>
+                                 <md-menu-item>
+                                    <md-button ng-click="ctrl.menuAction('file.importfile', $event)">
+                                        Import File
+                                    </md-button>
+                                </md-menu-item>
                                  <md-menu-divider></md-menu-divider>
                                  <md-menu-item>
                                     <md-button ng-disabled="!shouldSave" ng-click="ctrl.menuAction('file.save', $event)">
