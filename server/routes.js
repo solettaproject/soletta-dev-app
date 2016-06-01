@@ -379,6 +379,17 @@
         }
     });
 
+    router.post('/api/file/upload', function(req, res) {
+        upload(req, res, function(err) {
+            if (err) {
+                res.status(400).send("File Upload Failed!");
+                return;
+            } else {
+                res.send("File Uploaded Successfully!");
+            }
+        })  
+    });
+
     router.post('/api/git/repo/delete/file', function (req, res) {
         var file_path = req.body.params.file_path;
         if (!file_path) {
