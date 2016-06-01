@@ -17,6 +17,7 @@
 module.exports = function () {
     var fs = require('fs');
     var path = require('path');
+    var multer = require('multer');
     require('./configuration.js')();
 
     this.home_dir = function(user) {
