@@ -176,6 +176,44 @@ font-family: clearsans-light;
     padding-left: 10px;
     border-radius: 20px;
 }
+.inputFileControls {
+    background-color: #262a2e;
+    border: 0;
+    color: #8c8c8c;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+.inputFileControls + label {
+    font-size: 14px !important;
+    font-weight: normal;
+    font-family: clearsans !important;
+    color: #8c8c8c;
+    background-color: white;
+    display: inline-block;
+    margin-right: 10px;
+    padding: .4em 1em;
+    border-radius: 20px;
+    cursor: pointer;
+    text-align: center;
+}
+.list-item {
+    font-size: 14px !important;
+    width: 67%;
+    font-weight: normal;
+    font-family: clearsans !important;
+    background-color: #262a2e;
+    margin-right: 10px;
+    padding: .45em 1em;
+    list-style-type: none;
+    border-radius: 13px;
+    color: #8c8c8c;
+    text-align: center;
+    display: inline-block;
+}
 /* Overwrite jquery ui class*/
 .ui-autocomplete-input, .ui-corner-right {
     background: none !important;
