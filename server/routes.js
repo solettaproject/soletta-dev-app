@@ -366,7 +366,7 @@
             res.status(400).send("Failed to get file path and its name");
         }
         if (isInsideRepo(file_path)) {
-            execOnServer('touch ' + file_path, function(returns) {
+            execOnServer('echo $null > ' + file_path, function(returns) {
                 if (returns.error === true) {
                     res.status(400).send("Failed to run command on server");
                 } else {

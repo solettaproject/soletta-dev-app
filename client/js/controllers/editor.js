@@ -571,6 +571,19 @@
 
                 }
 
+                function isFileExists(repo, file_name) {
+                    var tree = $('#jstree').jstree(true);
+                    var rep = tree.get_node(repo);
+                    var test = false;
+                    $.each(rep.children, function (index, file) {
+                        var file_test = file.split("/").pop();
+                        if (file_name === file_test) {
+                            test = true;
+                        }
+                    });
+                    return test;
+                }
+
                 $scope.createProjectFromScratch = function () {
                     var dialog = $('<div></div>').
                                  html($compile('<div>Project name <input class="inputControls"' +
@@ -768,13 +781,23 @@
                     dialog.dialog("open");
                 };
 
+                function confirmFileCreation(repo, name) {
+                    $http.post('/api/git/repo/create/file',
+                              {params: {"file_path": repo + name}
+                    }).success(function(data) {
+                        $scope.refreshTree();
+                    }).error(function(){
+                        alert("Oh uh, something went wrong. Try again");
+                    });
+                }
+
                 $scope.createFile = function () {
-                    var file = filePath;
-                    if (file) {
+                    var repo = filePath;
+                    if (repo) {
                         if (isLeaf) {
-                            var cached = file.split("/");
+                            var cached = repo.split("/");
                             cached.pop();
-                            file = cached.join("/");
+                            repo = cached.join("/");
                         }
                         var dialog = $('<div></div>').
                                    html($compile('<input class="inputControls"' +
@@ -799,22 +822,25 @@
                           },
                           buttons: {
                               "Create": function() {
-                                  var name = "/" + $scope.file_name;
-                                  if (name) {
-                                      $http.post('/api/git/repo/create/file',
-                                      {
-                                          params: {
-                                              "file_path": file + name
-                                          }
-                                      }).success(function(data) {
-                                          $scope.refreshTree();
-                                      }).error(function(){
-                                          alert("Oh uh, something went wrong. Try again");
-                                      });
+                                  if ($scope.file_name) {
+                                      var name = "/" + $scope.file_name;
+                                      if (!isFileExists(repo, $scope.file_name)) {
+                                          confirmFileCreation(repo, name);
+                                          dialog.dialog("close");
+                                      } else {
+                                          sure_dialog("File", "The file " + $scope.file_name +
+                                                      " already exists, do you want to override it?",
+                                            function(close_id) {
+                                                if(close_id) {
+                                                    confirmFileCreation(repo, name);
+                                                    dialog.dialog("close");
+                                                }
+                                            });
+                                      }
+
                                   } else {
                                       alert("Oh uh, something went wrong. Try again");
                                   }
-                                  $(this).dialog("close");
                               },
                               Cancel: function() {
                                   $(this).dialog("close");
