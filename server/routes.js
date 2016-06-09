@@ -348,7 +348,8 @@
             res.status(400).send("Failed to get folder path and its name");
         }
         if (isInsideRepo(folder_path)) {
-            execOnServer('mkdir ' + folder_path, function(returns) {
+            execOnServer('rm -rf ' + folder_path + ' && mkdir ' +
+                         folder_path, function(returns) {
                 if (returns.error === true) {
                     res.status(400).send("Failed to run command on server");
                 } else {

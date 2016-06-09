@@ -723,12 +723,25 @@
 
                 };
 
+                function confirmFolderCreation(repo, name) {
+                    $http.post('/api/git/repo/create/folder',
+                    {
+                        params: { "folder_path": repo + name
+                    }
+                    }).success(function(data) {
+                        $scope.refreshTree();
+                    }).error(function(){
+                        alert("Oh uh, something went wrong. Try again");
+                    });
+                }
+
+
                 $scope.newFolder = function () {
-                    var file = filePath;
+                    var repo = filePath;
                     if (isLeaf) {
-                        var cached = file.split("/");
+                        var cached = repo.split("/");
                         cached.pop();
-                        file = cached.join("/");
+                        repo = cached.join("/");
                     }
                     var dialog = $('<div></div>').
                                  html($compile('<input class="inputControls"' +
@@ -753,18 +766,21 @@
                         },
                         buttons: {
                             "Create": function() {
-                                var name = "/" + $scope.folder_name;
-                                if (name) {
-                                    $http.post('/api/git/repo/create/folder',
-                                    {
-                                        params: {
-                                            "folder_path": file + name
-                                        }
-                                    }).success(function(data) {
-                                        $scope.refreshTree();
-                                    }).error(function(){
-                                        alert("Oh uh, something went wrong. Try again");
-                                    });
+                                if ($scope.folder_name) {
+                                    var name = "/" + $scope.folder_name;
+                                    if (!isFileExists(repo, $scope.folder_name)) {
+                                        confirmFolderCreation(repo, name);
+                                        dialog.dialog("close");
+                                    } else {
+                                        sure_dialog("Folde", "The folder " + $scope.folder_name +
+                                                      " already exists, do you want to override it?",
+                                        function(close_id) {
+                                            if(close_id) {
+                                                confirmFolderCreation(repo, name);
+                                                dialog.dialog("close");
+                                            }
+                                        });
+                                    }
                                 } else {
                                     alert("Oh uh, something went wrong. Try again");
                                 }
