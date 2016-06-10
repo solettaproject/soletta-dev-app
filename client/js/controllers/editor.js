@@ -584,6 +584,46 @@
                     return test;
                 }
 
+                function confirmProjectCreation(prj_name, fbp_name, body) {
+                    $http.post('/api/git/repo/create/new/project',
+                    {
+                        params: {
+                            "project_name": prj_name,
+                            "file_name": fbp_name,
+                            "file_code": body
+                        }
+                    }).success(function(data) {
+                        var repo_data = data;
+                        var file_data = data + "/" + fbp_name;
+                        var t = $("#jstree").jstree(true);
+                        $("#jstree").one("refresh.jstree", function () {
+                            $("#jstree").one("open_node.jstree", function () {
+                                t.select_node(file_data);
+                            });
+                            t.open_node(repo_data);
+                        });
+                        $scope.refreshTree();
+                        $scope.shouldSave = false;
+                        $(".ui-dialog-buttonpane button:contains('Close')").button("enable");
+                        $(".ui-dialog-buttonpane button:contains('Create')").button("enable");
+                    }).error(function(data) {
+                        alert("Failed to create project aborting. Reason: " + data);
+                        $(".ui-dialog-buttonpane button:contains('Close')").button("enable");
+                        $(".ui-dialog-buttonpane button:contains('Create')").button("enable");
+                    });
+                }
+
+                function isProjectExists(project_name) {
+                    var test = false;
+                    $.each($("#tree li"), function(key, li) {
+                       var prj = li.id.split("/").pop();
+                       if (project_name === prj) {
+                           test = true;
+                       }
+                    });
+                    return test;
+                }
+
                 $scope.createProjectFromScratch = function () {
                     var dialog = $('<div></div>').
                                  html($compile('<div>Project name <input class="inputControls"' +
@@ -624,33 +664,22 @@
                                     if (fbp_name.substr(fbp_name.length - 4) !== ".fbp") {
                                         fbp_name = fbp_name + ".fbp";
                                     }
-                                    $http.post('/api/git/repo/create/new/project',
-                                    {
-                                        params: {
-                                            "project_name": $scope.prj_name,
-                                            "file_name": fbp_name,
-                                            "file_code": body
-                                        }
-                                    }).success(function(data) {
-                                        var repo_data = data;
-                                        var file_data = data + "/" + fbp_name;
-                                        var t = $("#jstree").jstree(true);
-                                        $("#jstree").one("refresh.jstree", function () {
-                                            $("#jstree").one("open_node.jstree", function () {
-                                                t.select_node(file_data);
-                                            });
-                                            t.open_node(repo_data);
-                                        });
-                                        $scope.refreshTree();
-                                        $scope.shouldSave = false;
-                                        $(".ui-dialog-buttonpane button:contains('Close')").button("enable");
-                                        $(".ui-dialog-buttonpane button:contains('Create')").button("enable");
+                                    if (!isProjectExists($scope.prj_name)) {
+                                        confirmProjectCreation($scope.prj_name, fbp_name, body);
                                         dialog.dialog("close");
-                                    }).error(function(data) {
-                                        alert("Failed to create project aborting. Reason: " + data);
-                                        $(".ui-dialog-buttonpane button:contains('Close')").button("enable");
-                                        $(".ui-dialog-buttonpane button:contains('Create')").button("enable");
-                                    });
+                                    } else {
+                                        sure_dialog("Project", "The project " + $scope.prj_name +
+                                                    " already exists, do you want to override it?",
+                                            function(close_id) {
+                                                if(close_id) {
+                                                    confirmProjectCreation($scope.prj_name, fbp_name, body);
+                                                    dialog.dialog("close");
+                                                } else {
+                                                    $(".ui-dialog-buttonpane button:contains('Close')").button("enable");
+                                                    $(".ui-dialog-buttonpane button:contains('Create')").button("enable")
+                                                }
+                                            });
+                                    }
                                 } else {
                                     alert("Invalid project or file name.");
                                 }

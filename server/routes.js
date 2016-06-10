@@ -409,7 +409,8 @@
             var prj = project_path.split("server/../");
             var file_path = home_dir(current_user(req)) + project_name + "/" +
                             file_name;
-            execOnServer('mkdir ' + home_dir(current_user(req)) + project_name,
+            execOnServer('rm -rf ' + home_dir(current_user(req)) + project_name +
+                         ' && mkdir ' + home_dir(current_user(req)) + project_name,
                          function(returns) {
                 if (returns.error === true) {
                     res.status(400).send("Failed to run command on server");
