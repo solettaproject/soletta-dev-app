@@ -346,6 +346,16 @@ iframe{
     position: relative;
 }
 
+.ace_content {
+    color: #616568;
+}
+
+.ace_tooltip.ace_doc-tooltip {
+    background: #2D3237;
+    border-radius: 4px;
+    color: #fff;
+}
+
 .disable_div {
     display: none;
 }
