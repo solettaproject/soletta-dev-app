@@ -26,6 +26,7 @@
 
     var routes = require('./routes.js');
     require('./configuration.js')();
+    require('./syntax_gen.js')();
 
     try {
         var app = express();
@@ -87,6 +88,7 @@
         var server = app.listen(app.get('port'), function() {
             if (jConf.server_output) {
                 console.log('Express server listening on port ' + server.address().port);
+                generateNodetypes();
             }
         });
 

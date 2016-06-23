@@ -63,8 +63,12 @@
                 var Range = require('ace/range').Range;
                 var aceConfig = require("ace/config");
                 var modelist = ace.require("ace/ext/modelist");
+                ace.require("ace/ext/language_tools");
                 editor.setOptions({
-                    autoScrollEditorIntoView: true
+                    autoScrollEditorIntoView: true,
+                    enableBasicAutocompletion: true,
+                    enableSnippets: true,
+                    enableLiveAutocompletion: true
                 });
                 editor.commands.removeCommand("showSettingsMenu");
                 editor.$blockScrolling = Infinity;
