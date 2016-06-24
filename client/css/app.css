@@ -346,6 +346,17 @@ iframe{
     position: relative;
 }
 
+.ace_editor.ace_autocomplete.ace_dark.ace-monokai {
+    color: #000;
+    background-color: #fff !important;
+ }
+
+.ace_tooltip.ace_doc-tooltip {
+    background: #2D3237;
+    border-radius: 4px;
+    color: #fff;
+}
+
 .disable_div {
     display: none;
 }
