@@ -78,6 +78,7 @@
                 editor.keyBinding.origOnCommandKey = editor.keyBinding.onCommandKey;
 
                 $scope.fbpType = true;
+                aceConfig.set("basePath","js/ace/");
                 aceConfig.set("modePath", "js/ace/");
                 editor.getSession().setMode("ace/mode/fbp");
                 $scope.fileViewer = '# Write FBP Code here.';
