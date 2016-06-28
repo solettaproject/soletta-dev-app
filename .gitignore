@@ -1,3 +1,4 @@
 /node_modules/*
 /client/libs/*
 /sessions
+/client/js/ace/snippets/fbp.js
