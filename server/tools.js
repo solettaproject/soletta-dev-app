@@ -17,6 +17,7 @@
 module.exports = function () {
     var fs = require('fs');
     var path = require('path');
+    var multer = require('multer');
     require('./configuration.js')();
 
     this.home_dir = function(user) {
@@ -246,6 +247,17 @@ module.exports = function () {
             }
         }
     };
+
+    this.storage = multer.diskStorage({
+        destination: function(req, file, callback) {
+            callback(null, String(req.body.upload_path)) 
+        },
+        filename: function(req, file, callback) {
+            callback(null, file.originalname)
+        }
+    });
+
+    this.upload = multer({storage: storage }).single('file');
 
     this.getServerName = function(repo_url) {
         var url_array = repo_url.split("/");
