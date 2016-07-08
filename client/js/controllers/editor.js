@@ -988,6 +988,45 @@
                     }
                 };
 
+                var saveFile = (function () {
+                    var a = document.createElement('a');
+                    document.body.appendChild(a);
+                    a.style = 'display: none';
+                    return function (blob, file_name) {
+                        var url = window.URL.createObjectURL(blob);
+                        a.href = url;
+                        a.download = file_name;
+                        a.click();
+                        setTimeout( function() {
+                            window.URL.revokeObjectURL(url);
+                        }, 100);
+                    };
+                }());
+
+                $scope.exportFile = function () {
+                    var file = filePath;
+                    if (file) {
+                        if (isLeaf) {
+                            $http.get('/api/file/download',
+                                { params: { "file": file },
+                                responseType: "arraybuffer"
+                            }).success( function (data, status, headers, config) {
+                                var f = headers('Content-Disposition').match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/g);
+                                var file_name = String(f).split('=').pop().slice(1, -1);
+                                var mime_type = headers('Content-Type');
+                                var blob = new Blob([data], { type: String(mime_type) });
+                                saveFile(blob, file_name);
+                            }).error( function (data, status, headers, config) {
+                                alert('Error: Unable to Download File');
+                            });
+                        } else {
+                            alert('Error: Cannot Download Folder');
+                        }
+                    } else {
+                        alert('Please select File first!');
+                    }
+                };
+
                 $scope.remove = function () {
                     if (filePath) {
                         var file_name = filePath.split("/").pop();
@@ -1099,6 +1138,9 @@
                             break;
                         case "file.importfile":
                             $scope.importFile();
+                            break;
+                        case "file.exportfile":
+                            $scope.exportFile();
                             break;
                         case "file.remove":
                             $scope.remove();
