@@ -393,6 +393,20 @@
         })  
     });
 
+    router.get('/api/file/download', function(req, res) {
+        var file_path = req.query.file;
+        if ( file_path.search('soletta-dev-app/repos') > -1 ) {
+            var file_name = file_path.split('/').pop();
+            if (fs.statSync(file_path)) {
+                res.download(file_path, file_name);
+            } else {
+                res.sendStatus(400);
+            }
+        } else {
+            res.sendStatus(400);
+        }
+    });    
+
     router.post('/api/git/repo/delete/file', function (req, res) {
         var file_path = req.body.params.file_path;
         if (!file_path) {
