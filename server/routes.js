@@ -389,8 +389,8 @@
                 }
             } else {
                 return res.status(400).send('Error: Form cannot be empty');
-            }  
-        })  
+            }
+        });
     });
 
     router.get('/api/file/download', function(req, res) {
@@ -405,7 +405,7 @@
         } else {
             res.sendStatus(400);
         }
-    });    
+    });
 
     router.post('/api/git/repo/delete/file', function (req, res) {
         var file_path = req.body.params.file_path;

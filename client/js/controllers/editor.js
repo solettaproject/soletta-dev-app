@@ -681,7 +681,7 @@
                                                     dialog.dialog("close");
                                                 } else {
                                                     $(".ui-dialog-buttonpane button:contains('Close')").button("enable");
-                                                    $(".ui-dialog-buttonpane button:contains('Create')").button("enable")
+                                                    $(".ui-dialog-buttonpane button:contains('Create')").button("enable");
                                                 }
                                             });
                                     }
@@ -910,7 +910,7 @@
                 $scope.filesChanged = function(elm) {
                     $scope.files = elm.files;
                     $scope.$apply();
-                }
+                };
 
                 $scope.importFile = function () {
                     var file = filePath;
@@ -958,7 +958,7 @@
                                         $scope.refreshTree();
                                         $scope.stopSpin();
                                         $(".ui-dialog-buttonpane button:contains('Cancel')").button("enable");
-                                        $(".ui-dialog-buttonpane button:contains('Upload')").button("enable");                                       
+                                        $(".ui-dialog-buttonpane button:contains('Upload')").button("enable");
                                     })
                                     .error(function(d) {
                                         alert(d);
@@ -968,7 +968,7 @@
                                     });
                                 $scope.startSpin();
                                 $(".ui-dialog-buttonpane button:contains('Cancel')").button("disable");
-                                $(".ui-dialog-buttonpane button:contains('Upload')").button("disable");                                
+                                $(".ui-dialog-buttonpane button:contains('Upload')").button("disable");
                                 $(this).dialog("close");
                               },
                               Cancel: function() {
@@ -981,7 +981,7 @@
                       });
                       dialog.dialog("open");
                         } else {
-                            alert("Error: Upload to demo folder is not allowed")
+                            alert("Error: Upload to demo folder is not allowed");
                         }
                     } else {
                         alert("Folder destination must be selected!");
