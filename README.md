@@ -46,7 +46,7 @@ To get soletta and how to install [click here.](https://github.com/solettaprojec
 To install on common linux distros:
 
 ##### Fedora:
-        yum install nodejs npm graphviz
+        dnf install nodejs npm graphviz
 
 ##### Arch:
         pacman -S nodejs npm graphviz
