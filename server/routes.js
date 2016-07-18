@@ -182,9 +182,12 @@
             var hidden_fbp = generateHiddenPath(file_path);
             if (hidden_fbp) {
                 if(!writeFile(file_path, file_body)) {
-                    execOnServer("rm -f " + hidden_fbp, function(returns) {
+                    try {
+                        removeFile(hidden_fbp);
                         res.sendStatus(0);
-                    });
+                    } catch (e) {
+                        res.status(400).send(e);
+                    }
                 } else {
                     res.status(400).send("Failed to write file " + file_path.split("/").pop());
                 }
@@ -348,14 +351,15 @@
             res.status(400).send("Failed to get folder path and its name");
         }
         if (isInsideRepo(folder_path)) {
-            execOnServer('rm -rf ' + folder_path + ' && mkdir ' +
-                         folder_path, function(returns) {
-                if (returns.error === true) {
-                    res.status(400).send("Failed to run command on server");
-                } else {
-                    res.send(returns.message);
+            try {
+                if (fs.existsSync(folder_path)) {
+                    removeFolder(folder_path);
                 }
-            });
+                createFolder(folder_path);
+                res.status(0).send("Folder created successfully");
+            } catch (e) {
+                res.status(400).send(e);
+            }
         } else {
             res.status(400).send("Error: folder path is not valid.");
         }
@@ -367,13 +371,12 @@
             res.status(400).send("Failed to get file path and its name");
         }
         if (isInsideRepo(file_path)) {
-            execOnServer('echo $null > ' + file_path, function(returns) {
-                if (returns.error === true) {
-                    res.status(400).send("Failed to run command on server");
-                } else {
-                    res.send(returns.message);
-                }
-            });
+            try {
+                createEmptyFile(file_path);
+                res.status(0).send("File created successfully");
+            } catch (e) {
+                res.status(400).send(e);
+            }
         } else {
             res.status(400).send("Error: file path is not valid.");
         }
@@ -413,13 +416,12 @@
             res.status(400).send("Failed to get file path and its name");
         } else {
             if (isInsideRepo(file_path)) {
-                execOnServer('rm -rf ' + file_path, function(returns) {
-                    if (returns.error === true) {
-                        res.status(400).send("Failed to run command on server");
-                    } else {
-                        res.send(returns.message);
-                    }
-                });
+                if (fs.lstatSync(file_path).isDirectory()) {
+                    removeFolder(file_path);
+                } else {
+                    removeFile(file_path);
+                }
+                res.status(0).send("File deleted successfully");
             } else {
                 res.status(400).send("Failed to run command on server");
             }
@@ -437,29 +439,29 @@
             var prj = project_path.split("server/../");
             var file_path = home_dir(current_user(req)) + project_name + "/" +
                             file_name;
-            execOnServer('rm -rf ' + home_dir(current_user(req)) + project_name +
-                         ' && mkdir ' + home_dir(current_user(req)) + project_name,
-                         function(returns) {
-                if (returns.error === true) {
-                    res.status(400).send("Failed to run command on server");
-                } else {
-                    if (code) {
-                        if(!writeFile(file_path, code)) {
-                            res.send(prj[0] + prj[1]);
-                        } else {
-                            res.status(400).send("Failed to run command on server");
-                        }
-                    } else {
-                        execOnServer('touch ' + file_path, function(returns) {
-                            if (returns.error === true) {
-                                res.status(400).send("Failed to run command on server");
-                            } else {
-                                res.send(prj[0] + prj[1]);
-                            }
-                        });
-                    }
+            try {
+                if (fs.existsSync(project_path)) {
+                    removeFolder(project_path);
                 }
-            });
+                createFolder(project_path);
+            } catch (e) {
+                res.status(400).send(e);
+            }
+
+            if (code) {
+                if(!writeFile(file_path, code)) {
+                    res.send(prj[0] + prj[1]);
+                } else {
+                    res.status(400).send("Failed to run command on server");
+                }
+            } else {
+                try {
+                    createEmptyFile(file_path);
+                    res.status(0).send("Project created successfully.");
+                } catch (e) {
+                    res.status(400).send(e);
+                }
+            }
         }
     });
 

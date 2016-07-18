@@ -109,6 +109,48 @@ module.exports = function () {
         }
     };
 
+    this.removeFolder = function(path) {
+        try {
+            if(fs.existsSync(path)) {
+                fs.readdirSync(path).forEach(function(file, index) {
+                  var curPath = path + "/" + file;
+                  if(fs.lstatSync(curPath).isDirectory()) {
+                    removeFolder(curPath);
+                  } else {
+                    fs.unlinkSync(curPath);
+                  }
+                });
+                fs.rmdirSync(path);
+            }
+        } catch (e) {
+            return new Error(e)
+        }
+    };
+
+    this.createEmptyFile = function(path) {
+        try {
+            fs.closeSync(fs.openSync(path, 'w'));
+        } catch (e) {
+            return new Error(e)
+        }
+    };
+
+    this.createFolder = function(path) {
+        try {
+            fs.mkdirSync(path);
+        } catch (e) {
+            return new Error(e)
+        }
+    };
+
+    this.removeFile = function(path) {
+        try {
+            fs.unlinkSync(path);
+        } catch (e) {
+            return new Error(e)
+        }
+    };
+
     this.parseJournaldToJSON = function(user, output) {
         var i = 0;
         var journald = [];
@@ -250,7 +292,7 @@ module.exports = function () {
 
     this.storage = multer.diskStorage({
         destination: function(req, file, callback) {
-            callback(null, String(req.body.upload_path)) 
+            callback(null, String(req.body.upload_path))
         },
         filename: function(req, file, callback) {
             callback(null, file.originalname)
