@@ -589,7 +589,18 @@
                     return test;
                 }
 
+                function normalizeName(name) {
+                    if (name.charAt(0) === '.') {
+                        console.log(name.substr(1));
+                        return name.substr(1);
+                    } else {
+                        return name;
+                    }
+                }
+
                 function confirmProjectCreation(prj_name, fbp_name, body) {
+                    prj_name = normalizeName(prj_name);
+                    fbp_name = normalizeName(fbp_name);
                     $http.post('/api/git/repo/create/new/project',
                     {
                         params: {
@@ -758,6 +769,7 @@
                 };
 
                 function confirmFolderCreation(repo, name) {
+                    name = normalizeName(name);
                     $http.post('/api/git/repo/create/folder',
                     {
                         params: { "folder_path": repo + name
@@ -801,16 +813,15 @@
                         buttons: {
                             "Create": function() {
                                 if ($scope.folder_name) {
-                                    var name = "/" + $scope.folder_name;
                                     if (!isFileExists(repo, $scope.folder_name)) {
-                                        confirmFolderCreation(repo, name);
+                                        confirmFolderCreation(repo + "/", $scope.folder_name);
                                         dialog.dialog("close");
                                     } else {
                                         sure_dialog("Folde", "The folder " + $scope.folder_name +
                                                       " already exists, do you want to override it?",
                                         function(close_id) {
                                             if(close_id) {
-                                                confirmFolderCreation(repo, name);
+                                                confirmFolderCreation(repo + "/", $scope.folder_name);
                                                 dialog.dialog("close");
                                             }
                                         });
@@ -832,6 +843,7 @@
                 };
 
                 function confirmFileCreation(repo, name) {
+                    name = normalizeName(name);
                     $http.post('/api/git/repo/create/file',
                               {params: {"file_path": repo + name}
                     }).success(function(data) {
@@ -873,16 +885,15 @@
                           buttons: {
                               "Create": function() {
                                   if ($scope.file_name) {
-                                      var name = "/" + $scope.file_name;
                                       if (!isFileExists(repo, $scope.file_name)) {
-                                          confirmFileCreation(repo, name);
+                                          confirmFileCreation(repo + "/", $scope.file_name);
                                           dialog.dialog("close");
                                       } else {
                                           sure_dialog("File", "The file " + $scope.file_name +
                                                       " already exists, do you want to override it?",
                                             function(close_id) {
                                                 if(close_id) {
-                                                    confirmFileCreation(repo, name);
+                                                    confirmFileCreation(repo + "/", $scope.file_name);
                                                     dialog.dialog("close");
                                                 }
                                             });
