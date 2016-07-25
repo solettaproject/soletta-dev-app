@@ -29,6 +29,9 @@
                 var schemaDiag;
                 var filePath;
                 var isLeaf;
+                var nodenames = [];
+                var inports = [], outports = [];
+                var members = [], membernodes = [];
                 $scope.clearTimeStamp = 0;
                 $scope.clipboard = "";
                 $scope.syntaxCheckRefreshPeriod = 1100;
@@ -63,11 +66,10 @@
                 var Range = require('ace/range').Range;
                 var aceConfig = require("ace/config");
                 var modelist = ace.require("ace/ext/modelist");
-                ace.require("ace/ext/language_tools");
+                var langtools = ace.require("ace/ext/language_tools");
                 editor.setOptions({
                     autoScrollEditorIntoView: true,
                     enableBasicAutocompletion: true,
-                    enableSnippets: true,
                     enableLiveAutocompletion: true
                 });
                 editor.commands.removeCommand("showSettingsMenu");
@@ -1035,6 +1037,130 @@
                         alert('Please select File first!');
                     }
                 };
+
+                $scope.getNodes = function () {
+                    $http.get('/api/nodetypes/get')
+                    .success(function (data) {
+                        if (data) {
+                            for (var i in data) {
+                                for (var j in data[i]) {
+                                    nodenames.push(data[i][j].name);
+                                    inports.push(data[i][j].in_ports);
+                                    outports.push(data[i][j].out_ports);
+                                    if (data[i][j].options) {
+                                        members.push(data[i][j].options.members);
+                                        membernodes.push(data[i][j].name);
+                                    }
+                                }
+                            }
+                        }
+                    }).error(function (data) {
+                        console.log("Error getting nodetypes: " + data);
+                    });
+                };
+
+                $scope.getNodes();
+
+                var prettifyNodetype = function (nodetype) {
+                    var temp = nodetype.split('/');
+                    temp[0] = temp[0].toUpperCase();
+                    if (temp[1]) {
+                        temp[1] = temp[1].charAt(0).toUpperCase() + temp[1].slice(1);
+                        return temp[0] + ' ' + temp[1];
+                    }
+                };
+
+                var autoCompleter = {
+                    getCompletions: function(editor, session, pos, prefix, callback) {
+                        var node_pos, brackets, brack_pos, colon, colon_pos, nodeval,
+                            val_pos, ports, values, valCmd, portsList = [], dataTypeList = [];
+                        var curLine = session.getDocument().getLine(pos.row);
+                        var curTokens = curLine.slice(0, pos.column).split(/\s+/);
+                        var valTokens = curLine.slice(0, pos.column).split(':');
+                        if (valTokens[0]) {
+                            nodeval = valTokens[0].lastIndexOf('(');
+                            if (nodeval > -1) {
+                                valCmd = valTokens[0].slice(nodeval + 1);
+                            }
+                        }
+                        var curCmd = curTokens[0];
+                        if(!curCmd) return;
+                        node_pos = nodenames.indexOf(curTokens[curTokens.length-2]);
+                        if (curTokens[curTokens.length-2]) {
+                            brackets = curTokens[curTokens.length-2].split('(');
+                            if (brackets[1]) {
+                                colon = brackets[1].split(':')[0];
+                                colon_pos = nodenames.indexOf(colon);
+                            }
+                            brack_pos = nodenames.indexOf(brackets[brackets.length-1].slice(0, -1));
+                        }
+                        if (valCmd) {
+                            val_pos = membernodes.indexOf(valCmd);
+                        }
+                        if (node_pos > -1 || brack_pos > -1 || colon_pos > -1 || val_pos > -1) {
+                            values = members[val_pos];
+                            if (outports[node_pos]) {
+                                ports = outports[node_pos];
+                            } else if (outports[brack_pos]) {
+                                ports = outports[brack_pos];
+                            } else if (outports[colon_pos]) {
+                                ports = outports[colon_pos];
+                            } else if (inports[node_pos]) {
+                                ports = inports[node_pos];
+                            } else if (inports[brack_pos]) {
+                                ports = inports[brack_pos];
+                            } else if (inports[colon_pos]) {
+                                ports = inports[colon_pos];
+                            }
+                            if (values) {
+                                for (var i in values) {
+                                    portsList.push(values[i].name);
+                                    dataTypeList.push(values[i].data_type);
+                                }
+                                var getDataType = function (word) {
+                                    var index = portsList.indexOf(word);
+                                    return dataTypeList[index];
+                                };
+                                callback(null, portsList.map(function(word) {
+                                    return {
+                                        caption: word,
+                                        value: word,
+                                        meta: getDataType(word)
+                                    };
+                                }));
+                            } else if (ports) {
+                                for (var j in ports) {
+                                    portsList.push(ports[j].name);
+                                }
+                                callback(null, portsList.map(function(word) {
+                                    return {
+                                        caption: word,
+                                        value: word,
+                                        meta: "PORT"
+                                    };
+                                }));
+                            } else {
+                                callback(null, nodenames.map(function(word) {
+                                    return {
+                                        caption: prettifyNodetype(word),
+                                        value: word,
+                                        meta: "nodetype"
+                                    };
+                                }));
+                            }
+                        } else {
+                            callback(null, nodenames.map(function(word) {
+                                return {
+                                    caption: prettifyNodetype(word),
+                                    value: word,
+                                    meta: "nodetype"
+                                };
+                            }));
+                        }
+                    }
+                };
+
+                langtools.addCompleter(autoCompleter);
 
                 $scope.remove = function () {
                     if (filePath) {
