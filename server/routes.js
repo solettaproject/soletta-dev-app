@@ -410,6 +410,10 @@
         }
     });
 
+    router.get('/api/nodetypes/get', function(req, res) {
+        res.send(getNodes());
+    });
+
     router.post('/api/git/repo/delete/file', function (req, res) {
         var file_path = req.body.params.file_path;
         if (!file_path) {
