@@ -591,7 +591,6 @@
 
                 function normalizeName(name) {
                     if (name.charAt(0) === '.') {
-                        console.log(name.substr(1));
                         return name.substr(1);
                     } else {
                         return name;
@@ -965,7 +964,6 @@
                                     headers:{'Content-Type':undefined}
                                   })
                                     .success(function(d) {
-                                        console.log(d);
                                         $scope.refreshTree();
                                         $scope.stopSpin();
                                         $(".ui-dialog-buttonpane button:contains('Cancel')").button("enable");
