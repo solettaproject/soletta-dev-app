@@ -18,6 +18,7 @@ module.exports = function () {
     var fs = require('fs');
     var path = require('path');
     var multer = require('multer');
+    var nodes = require('./nodetypes/nodetypes.js');
     require('./configuration.js')();
 
     this.home_dir = function(user) {
@@ -300,6 +301,10 @@ module.exports = function () {
     });
 
     this.upload = multer({storage: storage }).single('file');
+
+    this.getNodes = function() {
+        return nodes.getNodeTypes();
+    };
 
     this.getServerName = function(repo_url) {
         var url_array = repo_url.split("/");
