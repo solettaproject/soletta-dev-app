@@ -1105,14 +1105,26 @@
                                 ports = outports[brack_pos];
                             } else if (outports[colon_pos]) {
                                 ports = outports[colon_pos];
-                            } else if (inports[node_pos]) {
-                                ports = inports[node_pos];
-                            } else if (inports[brack_pos]) {
-                                ports = inports[brack_pos];
-                            } else if (inports[colon_pos]) {
-                                ports = inports[colon_pos];
                             }
-                            if (values) {
+                            if (inports[node_pos]) {
+                                ports.push.apply(ports, inports[node_pos]);
+                            } else if (inports[brack_pos]) {
+                                ports.push.apply(ports, inports[brack_pos]);
+                            } else if (inports[colon_pos]) {
+                                ports.push.apply(ports, inports[colon_pos]);
+                            }
+                            if (ports) {
+                                for (var j in ports) {
+                                    portsList.push(ports[j].name);
+                                }
+                                callback(null, portsList.map(function(word) {
+                                    return {
+                                        caption: word,
+                                        value: word,
+                                        meta: "PORT"
+                                    };
+                                }));
+                            } else if (values) {
                                 for (var i in values) {
                                     portsList.push(values[i].name);
                                     dataTypeList.push(values[i].data_type);
@@ -1126,17 +1138,6 @@
                                         caption: word,
                                         value: word,
                                         meta: getDataType(word)
-                                    };
-                                }));
-                            } else if (ports) {
-                                for (var j in ports) {
-                                    portsList.push(ports[j].name);
-                                }
-                                callback(null, portsList.map(function(word) {
-                                    return {
-                                        caption: word,
-                                        value: word,
-                                        meta: "PORT"
                                     };
                                 }));
                             } else {
