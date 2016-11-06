@@ -11,12 +11,12 @@
     "express": "^4.12.4",
     "express-session": "^1.11.3",
     "http": "0.0.0",
-    "line-reader": "^0.2.4",
+    "line-reader": "^0.4.0",
     "morgan": "^1.5.3",
     "multer": "^1.1.0",
     "node-uuid": "^1.4.3",
     "octonode": "^0.7.1",
-    "session-file-store": "0.2.0"
+    "session-file-store": "0.2.2"
   },
   "scripts": {
     "test": "protractor protractor.config.js"
@@ -32,9 +32,9 @@
   "author": "",
   "license": "Apache-2.0",
   "devDependencies": {
-    "protractor": "~3.3.0",
+    "protractor": "~4.0.10",
     "expect.js": "~0.3.1",
-    "mocha": "~2.5.3"
+    "mocha": "~3.1.2"
   },
   "repository": {
     "type": "git",
