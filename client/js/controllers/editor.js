@@ -54,6 +54,7 @@
                 $scope.showhideCode = "Hide Code Viewer";
                 $scope.showhideFlow = "Hide Flow Viewer";
                 $scope.showhideProject = "Hide Project Viewer";
+                $scope.showRunDialog = "Show Run Dialog";
                 $scope.libChecked = true;
                 $scope.codeChecked = true;
                 $scope.svgChecked = true;
@@ -1321,6 +1322,9 @@
                             } else {
                                 $scope.showhideProject = "Show Project Viewer";
                             }
+                            break;
+                        case "view.runDialog":
+                            $scope.openRunDialog()
                             break;
                     }
                 };
